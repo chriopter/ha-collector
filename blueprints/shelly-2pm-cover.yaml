@@ -1,88 +1,50 @@
 blueprint:
-  name: Shelly 2PM Cover Controls
-  description: Control covers using Shelly 2PM buttons with all available actions - single press, double press, triple press, long press, button up, and button down.
+  name: Shelly Cover Controls (Multi-Device)
+  description: Control covers using Shelly devices with support for multiple devices and all button actions
   domain: automation
   input:
-    shelly_device:
-      name: Shelly Device
-      description: Select the Shelly device to use for button control
+    shelly_devices:
+      name: Shelly Devices
+      description: Select the Shelly devices to use for button control
       selector:
         device:
           integration: shelly
-          multiple: false
+          multiple: true
 
-    # Button 1 Actions
-    button_1_single_press_action:
-      name: Button 1 - Single Press Action
-      description: Action to run on single press of button 1
+    # Common actions for both buttons
+    single_press_action:
+      name: Single Press Action
+      description: Action to run on single press (both buttons)
       default: []
       selector:
         action: {}
-    button_1_double_press_action:
-      name: Button 1 - Double Press Action
-      description: Action to run on double press of button 1
+    double_press_action:
+      name: Double Press Action
+      description: Action to run on double press (both buttons)
       default: []
       selector:
         action: {}
-    button_1_triple_press_action:
-      name: Button 1 - Triple Press Action
-      description: Action to run on triple press of button 1
+    triple_press_action:
+      name: Triple Press Action
+      description: Action to run on triple press (both buttons)
       default: []
       selector:
         action: {}
-    button_1_long_press_action:
-      name: Button 1 - Long Press Action
-      description: Action to run on long press of button 1
+    long_press_action:
+      name: Long Press Action
+      description: Action to run on long press (both buttons)
       default: []
       selector:
         action: {}
-    button_1_up_action:
-      name: Button 1 - Button Up Action
-      description: Action to run when button 1 is released
+    btn_up_action:
+      name: Button Up Action
+      description: Action to run when button is released (both buttons)
       default: []
       selector:
         action: {}
-    button_1_down_action:
-      name: Button 1 - Button Down Action
-      description: Action to run when button 1 is pressed down
-      default: []
-      selector:
-        action: {}
-
-    # Button 2 Actions
-    button_2_single_press_action:
-      name: Button 2 - Single Press Action
-      description: Action to run on single press of button 2
-      default: []
-      selector:
-        action: {}
-    button_2_double_press_action:
-      name: Button 2 - Double Press Action
-      description: Action to run on double press of button 2
-      default: []
-      selector:
-        action: {}
-    button_2_triple_press_action:
-      name: Button 2 - Triple Press Action
-      description: Action to run on triple press of button 2
-      default: []
-      selector:
-        action: {}
-    button_2_long_press_action:
-      name: Button 2 - Long Press Action
-      description: Action to run on long press of button 2
-      default: []
-      selector:
-        action: {}
-    button_2_up_action:
-      name: Button 2 - Button Up Action
-      description: Action to run when button 2 is released
-      default: []
-      selector:
-        action: {}
-    button_2_down_action:
-      name: Button 2 - Button Down Action
-      description: Action to run when button 2 is pressed down
+    btn_down_action:
+      name: Button Down Action
+      description: Action to run when button is pressed down (both buttons)
       default: []
       selector:
         action: {}
@@ -95,127 +57,100 @@ trigger:
     domain: shelly
     type: single_push
     subtype: button1
-    device_id: !input shelly_device
-    id: button_1_single
+    device_id: !input shelly_devices
+    id: single
   - platform: device
     domain: shelly
     type: double_push
     subtype: button1
-    device_id: !input shelly_device
-    id: button_1_double
+    device_id: !input shelly_devices
+    id: double
   - platform: device
     domain: shelly
     type: triple_push
     subtype: button1
-    device_id: !input shelly_device
-    id: button_1_triple
+    device_id: !input shelly_devices
+    id: triple
   - platform: device
     domain: shelly
     type: long_push
     subtype: button1
-    device_id: !input shelly_device
-    id: button_1_long
+    device_id: !input shelly_devices
+    id: long
   - platform: device
     domain: shelly
     type: btn_up
     subtype: button1
-    device_id: !input shelly_device
-    id: button_1_up
+    device_id: !input shelly_devices
+    id: btn_up
   - platform: device
     domain: shelly
     type: btn_down
     subtype: button1
-    device_id: !input shelly_device
-    id: button_1_down
+    device_id: !input shelly_devices
+    id: btn_down
 
   # Button 2 Triggers
   - platform: device
     domain: shelly
     type: single_push
     subtype: button2
-    device_id: !input shelly_device
-    id: button_2_single
+    device_id: !input shelly_devices
+    id: single
   - platform: device
     domain: shelly
     type: double_push
     subtype: button2
-    device_id: !input shelly_device
-    id: button_2_double
+    device_id: !input shelly_devices
+    id: double
   - platform: device
     domain: shelly
     type: triple_push
     subtype: button2
-    device_id: !input shelly_device
-    id: button_2_triple
+    device_id: !input shelly_devices
+    id: triple
   - platform: device
     domain: shelly
     type: long_push
     subtype: button2
-    device_id: !input shelly_device
-    id: button_2_long
+    device_id: !input shelly_devices
+    id: long
   - platform: device
     domain: shelly
     type: btn_up
     subtype: button2
-    device_id: !input shelly_device
-    id: button_2_up
+    device_id: !input shelly_devices
+    id: btn_up
   - platform: device
     domain: shelly
     type: btn_down
     subtype: button2
-    device_id: !input shelly_device
-    id: button_2_down
+    device_id: !input shelly_devices
+    id: btn_down
 
 action:
   - choose:
-      # Button 1 Actions
       - conditions:
           - condition: trigger
-            id: button_1_single
-        sequence: !input button_1_single_press_action
+            id: single
+        sequence: !input single_press_action
       - conditions:
           - condition: trigger
-            id: button_1_double
-        sequence: !input button_1_double_press_action
+            id: double
+        sequence: !input double_press_action
       - conditions:
           - condition: trigger
-            id: button_1_triple
-        sequence: !input button_1_triple_press_action
+            id: triple
+        sequence: !input triple_press_action
       - conditions:
           - condition: trigger
-            id: button_1_long
-        sequence: !input button_1_long_press_action
+            id: long
+        sequence: !input long_press_action
       - conditions:
           - condition: trigger
-            id: button_1_up
-        sequence: !input button_1_up_action
+            id: btn_up
+        sequence: !input btn_up_action
       - conditions:
           - condition: trigger
-            id: button_1_down
-        sequence: !input button_1_down_action
-
-      # Button 2 Actions
-      - conditions:
-          - condition: trigger
-            id: button_2_single
-        sequence: !input button_2_single_press_action
-      - conditions:
-          - condition: trigger
-            id: button_2_double
-        sequence: !input button_2_double_press_action
-      - conditions:
-          - condition: trigger
-            id: button_2_triple
-        sequence: !input button_2_triple_press_action
-      - conditions:
-          - condition: trigger
-            id: button_2_long
-        sequence: !input button_2_long_press_action
-      - conditions:
-          - condition: trigger
-            id: button_2_up
-        sequence: !input button_2_up_action
-      - conditions:
-          - condition: trigger
-            id: button_2_down
-        sequence: !input button_2_down_action
+            id: btn_down
+        sequence: !input btn_down_action
