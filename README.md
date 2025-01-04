@@ -1,0 +1,2 @@
+# ha-collector
+Blueprints etc.
