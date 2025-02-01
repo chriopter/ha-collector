@@ -1,5 +1,5 @@
 blueprint:
-  name: Hue Tap Dial v2
+  name: Hue Tap Dial v4
   domain: automation
   input:
     mqtt_topic:
