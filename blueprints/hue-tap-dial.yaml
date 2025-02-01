@@ -1,5 +1,5 @@
 blueprint:
-  name: Hue Tap Dial Z2M v12
+  name: Hue Tap Dial Z2M v13
   domain: automation
   input:
     mqtt_topic:
@@ -250,70 +250,70 @@ action:
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_1_press' }}"
-        sequence: "{{ input.button_1_press }}"
+        sequence: !input button_1_press
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_1_press_release' }}"
-        sequence: "{{ input.button_1_press_release }}"
+        sequence: !input button_1_press_release
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_1_hold' }}"
-        sequence: "{{ input.button_1_hold }}"
+        sequence: !input button_1_hold
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_1_hold_release' }}"
-        sequence: "{{ input.button_1_hold_release }}"
+        sequence: !input button_1_hold_release
 
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_2_press' }}"
-        sequence: "{{ input.button_2_press }}"
+        sequence: !input button_2_press
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_2_press_release' }}"
-        sequence: "{{ input.button_2_press_release }}"
+        sequence: !input button_2_press_release
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_2_hold' }}"
-        sequence: "{{ input.button_2_hold }}"
+        sequence: !input button_2_hold
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_2_hold_release' }}"
-        sequence: "{{ input.button_2_hold_release }}"
+        sequence: !input button_2_hold_release
 
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_3_press' }}"
-        sequence: "{{ input.button_3_press }}"
+        sequence: !input button_3_press
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_3_press_release' }}"
-        sequence: "{{ input.button_3_press_release }}"
+        sequence: !input button_3_press_release
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_3_hold' }}"
-        sequence: "{{ input.button_3_hold }}"
+        sequence: !input button_3_hold
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_3_hold_release' }}"
-        sequence: "{{ input.button_3_hold_release }}"
+        sequence: !input button_3_hold_release
 
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_4_press' }}"
-        sequence: "{{ input.button_4_press }}"
+        sequence: !input button_4_press
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_4_press_release' }}"
-        sequence: "{{ input.button_4_press_release }}"
+        sequence: !input button_4_press_release
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_4_hold' }}"
-        sequence: "{{ input.button_4_hold }}"
+        sequence: !input button_4_hold
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_4_hold_release' }}"
-        sequence: "{{ input.button_4_hold_release }}"
+        sequence: !input button_4_hold_release
 
       # ––– Unified Dimming Events –––
       - conditions:
