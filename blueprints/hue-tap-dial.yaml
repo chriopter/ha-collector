@@ -199,32 +199,22 @@ action:
   - variables:
       event: "{{ trigger.payload_json.action }}"
       brightness_step: >
-        {% set steps = {
-          'dial_rotate_right_step': (states | default(0)) | float,
-          'dial_rotate_right_slow': (states | default(0)) | float,
-          'brightness_step_up': (states | default(0)) | float,
-          'dial_rotate_right_fast': (states | default(0)) | float,
-          'dial_rotate_left_step': -((states | default(0)) | float),
-          'dial_rotate_left_slow': -((states | default(0)) | float),
-          'brightness_step_down': -((states | default(0)) | float),
-          'dial_rotate_left_fast': -((states | default(0)) | float)
-        } %}
         {% if event == 'dial_rotate_right_step' %}
-          {{ states('input_number.step_size_right_step') | float }}
+          {{ !input step_size_right_step }}
         {% elif event == 'dial_rotate_right_slow' %}
-          {{ states('input_number.step_size_right_slow') | float }}
+          {{ !input step_size_right_slow }}
         {% elif event == 'brightness_step_up' %}
-          {{ states('input_number.step_size_right_quarter') | float }}
+          {{ !input step_size_right_quarter }}
         {% elif event == 'dial_rotate_right_fast' %}
-          {{ states('input_number.step_size_right_fast') | float }}
+          {{ !input step_size_right_fast }}
         {% elif event == 'dial_rotate_left_step' %}
-          {{ -(states('input_number.step_size_left_step') | float) }}
+          {{ -(!input step_size_left_step) }}
         {% elif event == 'dial_rotate_left_slow' %}
-          {{ -(states('input_number.step_size_left_slow') | float) }}
+          {{ -(!input step_size_left_slow) }}
         {% elif event == 'brightness_step_down' %}
-          {{ -(states('input_number.step_size_left_quarter') | float) }}
+          {{ -(!input step_size_left_quarter) }}
         {% elif event == 'dial_rotate_left_fast' %}
-          {{ -(states('input_number.step_size_left_fast') | float) }}
+          {{ -(!input step_size_left_fast) }}
         {% else %}
           {{ 0 }}
         {% endif %}
