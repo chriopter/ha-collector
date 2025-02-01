@@ -89,12 +89,16 @@ condition:
   - condition: template
     value_template: "{{ trigger.payload_json.action != '' }}"
 
+variables:
+  tap_counter: !input tap_counter
+  last_pressed: !input last_pressed
+
 action:
   - variables:
       button: "{{ trigger.payload_json.action | regex_replace(find='[^1-4]', replace='') }}"
       action_type: "{{ trigger.payload_json.action }}"
-      last_button: "{{ states(this.last_pressed) }}"
-      press_count: "{{ states(this.tap_counter) }}"
+      last_button: "{{ states(tap_counter) }}"
+      press_count: "{{ states(last_pressed) }}"
 
   - choose:
       # Handle initial button press
@@ -103,28 +107,28 @@ action:
             value_template: "{{ action_type is match('^button_[1-4]_press$') }}"
         sequence:
           - condition: template
-            value_template: "{{ button != states(this.last_pressed) }}"
+            value_template: "{{ button != states(last_pressed) }}"
           - service: counter.reset
             target:
-              entity_id: !input tap_counter
+              entity_id: "{{ tap_counter }}"
           - service: input_text.set_value
             target:
-              entity_id: !input last_pressed
+              entity_id: "{{ last_pressed }}"
             data:
               value: "{{ button }}"
           - service: counter.increment
             target:
-              entity_id: !input tap_counter
+              entity_id: "{{ tap_counter }}"
           - delay:
               seconds: 1
           - service: counter.reset
             target:
-              entity_id: !input tap_counter
+              entity_id: "{{ tap_counter }}"
 
       # Handle double press actions
       - conditions:
           - condition: template
-            value_template: "{{ action_type is match('button_[1-4]_press_release') and states(this.tap_counter) > '1' }}"
+            value_template: "{{ action_type is match('button_[1-4]_press_release') and states(tap_counter) > '1' }}"
         sequence:
           - choose:
               - conditions:
@@ -154,7 +158,7 @@ action:
               - delay:
                   milliseconds: 250
               - condition: template
-                value_template: "{{ states(this.tap_counter) > '1' }}"
+                value_template: "{{ states(tap_counter) > '1' }}"
               - service: script.stop
                 data:
                   message: "Double tap detected"
