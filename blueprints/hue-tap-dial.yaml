@@ -6,15 +6,14 @@ blueprint:
       name: "MQTT Topic"
       description: "MQTT topic for the Philips Hue Tap Dial Switch"
       default: "zigbee2mqtt/<device name>"
-
-    ## Button 1 actions
-    button_1_single_press:
-      name: "Button 1 Single Press"
+    ## Button 1 events
+    button_1_press:
+      name: "Button 1 Press"
       default: []
       selector:
         action: {}
-    button_1_double_press:
-      name: "Button 1 Double Press"
+    button_1_press_release:
+      name: "Button 1 Press Release"
       default: []
       selector:
         action: {}
@@ -23,15 +22,20 @@ blueprint:
       default: []
       selector:
         action: {}
-
-    ## Button 2 actions
-    button_2_single_press:
-      name: "Button 2 Single Press"
+    button_1_hold_release:
+      name: "Button 1 Hold Release"
       default: []
       selector:
         action: {}
-    button_2_double_press:
-      name: "Button 2 Double Press"
+
+    ## Button 2 events
+    button_2_press:
+      name: "Button 2 Press"
+      default: []
+      selector:
+        action: {}
+    button_2_press_release:
+      name: "Button 2 Press Release"
       default: []
       selector:
         action: {}
@@ -40,15 +44,20 @@ blueprint:
       default: []
       selector:
         action: {}
-
-    ## Button 3 actions
-    button_3_single_press:
-      name: "Button 3 Single Press"
+    button_2_hold_release:
+      name: "Button 2 Hold Release"
       default: []
       selector:
         action: {}
-    button_3_double_press:
-      name: "Button 3 Double Press"
+
+    ## Button 3 events
+    button_3_press:
+      name: "Button 3 Press"
+      default: []
+      selector:
+        action: {}
+    button_3_press_release:
+      name: "Button 3 Press Release"
       default: []
       selector:
         action: {}
@@ -57,15 +66,20 @@ blueprint:
       default: []
       selector:
         action: {}
-
-    ## Button 4 actions
-    button_4_single_press:
-      name: "Button 4 Single Press"
+    button_3_hold_release:
+      name: "Button 3 Hold Release"
       default: []
       selector:
         action: {}
-    button_4_double_press:
-      name: "Button 4 Double Press"
+
+    ## Button 4 events
+    button_4_press:
+      name: "Button 4 Press"
+      default: []
+      selector:
+        action: {}
+    button_4_press_release:
+      name: "Button 4 Press Release"
       default: []
       selector:
         action: {}
@@ -74,8 +88,13 @@ blueprint:
       default: []
       selector:
         action: {}
+    button_4_hold_release:
+      name: "Button 4 Hold Release"
+      default: []
+      selector:
+        action: {}
 
-    ## Unified Dial Rotation actions (applies to all)
+    ## Unified Dial Rotation events (applies to all)
     dial_rotate_clockwise:
       name: "Dial Rotate Clockwise (Dim or De-dim)"
       default: []
@@ -93,74 +112,91 @@ trigger:
   - platform: mqtt
     topic: !input mqtt_topic
 
+# Assuming the device sends a plain text payload like "button_1_press" etc.
 condition:
   - condition: template
-    value_template: "{{ trigger.payload_json.action != '' }}"
+    value_template: "{{ trigger.payload != '' }}"
 
 action:
   - choose:
-      ## Button 1 events
+      # Button 1 events
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload_json.action == 'button_1_single_press' }}"
-        sequence: !input button_1_single_press
+            value_template: "{{ trigger.payload == 'button_1_press' }}"
+        sequence: !input button_1_press
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload_json.action == 'button_1_double_press' }}"
-        sequence: !input button_1_double_press
+            value_template: "{{ trigger.payload == 'button_1_press_release' }}"
+        sequence: !input button_1_press_release
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload_json.action == 'button_1_hold' }}"
+            value_template: "{{ trigger.payload == 'button_1_hold' }}"
         sequence: !input button_1_hold
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload == 'button_1_hold_release' }}"
+        sequence: !input button_1_hold_release
 
-      ## Button 2 events
+      # Button 2 events
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload_json.action == 'button_2_single_press' }}"
-        sequence: !input button_2_single_press
+            value_template: "{{ trigger.payload == 'button_2_press' }}"
+        sequence: !input button_2_press
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload_json.action == 'button_2_double_press' }}"
-        sequence: !input button_2_double_press
+            value_template: "{{ trigger.payload == 'button_2_press_release' }}"
+        sequence: !input button_2_press_release
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload_json.action == 'button_2_hold' }}"
+            value_template: "{{ trigger.payload == 'button_2_hold' }}"
         sequence: !input button_2_hold
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload == 'button_2_hold_release' }}"
+        sequence: !input button_2_hold_release
 
-      ## Button 3 events
+      # Button 3 events
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload_json.action == 'button_3_single_press' }}"
-        sequence: !input button_3_single_press
+            value_template: "{{ trigger.payload == 'button_3_press' }}"
+        sequence: !input button_3_press
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload_json.action == 'button_3_double_press' }}"
-        sequence: !input button_3_double_press
+            value_template: "{{ trigger.payload == 'button_3_press_release' }}"
+        sequence: !input button_3_press_release
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload_json.action == 'button_3_hold' }}"
+            value_template: "{{ trigger.payload == 'button_3_hold' }}"
         sequence: !input button_3_hold
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload == 'button_3_hold_release' }}"
+        sequence: !input button_3_hold_release
 
-      ## Button 4 events
+      # Button 4 events
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload_json.action == 'button_4_single_press' }}"
-        sequence: !input button_4_single_press
+            value_template: "{{ trigger.payload == 'button_4_press' }}"
+        sequence: !input button_4_press
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload_json.action == 'button_4_double_press' }}"
-        sequence: !input button_4_double_press
+            value_template: "{{ trigger.payload == 'button_4_press_release' }}"
+        sequence: !input button_4_press_release
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload_json.action == 'button_4_hold' }}"
+            value_template: "{{ trigger.payload == 'button_4_hold' }}"
         sequence: !input button_4_hold
-
-      ## Unified Dial Rotation events
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload_json.action == 'dial_rotate_clockwise' }}"
+            value_template: "{{ trigger.payload == 'button_4_hold_release' }}"
+        sequence: !input button_4_hold_release
+
+      # Unified Dial Rotation events
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload == 'dial_rotate_clockwise' }}"
         sequence: !input dial_rotate_clockwise
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload_json.action == 'dial_rotate_counter_clockwise' }}"
+            value_template: "{{ trigger.payload == 'dial_rotate_counter_clockwise' }}"
         sequence: !input dial_rotate_counter_clockwise
