@@ -1,9 +1,30 @@
 blueprint:
-  name: Hue Tap Dial Advanced 2
+  name: Hue Tap Dial Advanced v3
   description: Control lights and covers with a Hue Tap Dial Switch with configurable dimming speeds
   domain: automation
+
   input:
-    # [Previous inputs remain the same until dimming values]
+    # MQTT Topic
+    mqtt_topic:
+      name: MQTT Topic
+      description: Topic of your Hue Tap Dial Switch
+      selector:
+        text:
+
+    # Helper Entities
+    tap_counter:
+      name: Counter Helper
+      description: Helper to Count Taps
+      selector:
+        entity:
+          domain: counter
+
+    last_pressed:
+      name: Last Pressed Input Text Helper
+      description: Helper to Track Last Button
+      selector:
+        entity:
+          domain: input_text
 
     # Dimming Values
     dim_step:
@@ -43,20 +64,158 @@ blueprint:
           max: 100
           unit_of_measurement: "%"
 
-    # [Rest of the inputs remain the same]
+    # Light Targets
+    button_1_lights:
+      name: Button 1 Lights
+      description: Lights controlled by Button 1
+      selector:
+        target:
+          entity:
+            domain: light
+    button_2_lights:
+      name: Button 2 Lights
+      description: Lights controlled by Button 2
+      selector:
+        target:
+          entity:
+            domain: light
+    button_3_lights:
+      name: Button 3 Lights
+      description: Lights controlled by Button 3
+      selector:
+        target:
+          entity:
+            domain: light
+    button_4_targets:
+      name: Button 4 Targets
+      description: Entities or areas controlled by Button 4
+      selector:
+        target:
+          entity:
+            domain: cover
 
-triggers:
-  - topic: !input mqtt_topic
-    trigger: mqtt
+    # Button Actions
+    button_1_press:
+      name: Button 1 Press Action
+      default: []
+      selector:
+        action: {}
+    button_1_hold:
+      name: Button 1 Hold Action
+      default: []
+      selector:
+        action: {}
+    button_2_press:
+      name: Button 2 Press Action
+      default: []
+      selector:
+        action: {}
+    button_2_hold:
+      name: Button 2 Hold Action
+      default: []
+      selector:
+        action: {}
+    button_3_press:
+      name: Button 3 Press Action
+      default: []
+      selector:
+        action: {}
+    button_3_hold:
+      name: Button 3 Hold Action
+      default: []
+      selector:
+        action: {}
+    button_4_press:
+      name: Button 4 Press Action
+      default: []
+      selector:
+        action: {}
+    button_4_hold:
+      name: Button 4 Hold Action
+      default: []
+      selector:
+        action: {}
+
+trigger:
+  - platform: mqtt
+    topic: !input mqtt_topic
 
 variables:
   action: "{{ trigger.payload_json.action }}"
 
-actions:
-  - choose:
-      # [Previous button actions remain the same]
+action:
+  - variables:
+      input_text_var: !input last_pressed
+      counter_var: !input tap_counter
 
-      # Rotation handling - FIXED VERSION
+  - choose:
+      # Button press detection
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload_json.action is match('^button_[1-4]_press$') }}"
+        sequence:
+          - if:
+              - condition: template
+                value_template: "{{ trigger.payload_json.action | regex_replace(find='[^1-4]', replace='') != states(input_text_var) }}"
+            then:
+              - service: counter.reset
+                target:
+                  entity_id: "{{ counter_var }}"
+          - service: input_text.set_value
+            data:
+              value: "{{ trigger.payload_json.action | regex_replace(find='[^1-4]', replace='') }}"
+            target:
+              entity_id: "{{ input_text_var }}"
+          - service: counter.increment
+            target:
+              entity_id: "{{ counter_var }}"
+          - delay:
+              seconds: 1
+          - service: counter.reset
+            target:
+              entity_id: "{{ counter_var }}"
+
+      # Button 1
+      - conditions:
+          - condition: template
+            value_template: "{{ action == 'button_1_press_release' }}"
+        sequence: !input button_1_press
+      - conditions:
+          - condition: template
+            value_template: "{{ action == 'button_1_hold' }}"
+        sequence: !input button_1_hold
+
+      # Button 2
+      - conditions:
+          - condition: template
+            value_template: "{{ action == 'button_2_press_release' }}"
+        sequence: !input button_2_press
+      - conditions:
+          - condition: template
+            value_template: "{{ action == 'button_2_hold' }}"
+        sequence: !input button_2_hold
+
+      # Button 3
+      - conditions:
+          - condition: template
+            value_template: "{{ action == 'button_3_press_release' }}"
+        sequence: !input button_3_press
+      - conditions:
+          - condition: template
+            value_template: "{{ action == 'button_3_hold' }}"
+        sequence: !input button_3_hold
+
+      # Button 4
+      - conditions:
+          - condition: template
+            value_template: "{{ action == 'button_4_press_release' }}"
+        sequence: !input button_4_press
+      - conditions:
+          - condition: template
+            value_template: "{{ action == 'button_4_hold' }}"
+        sequence: !input button_4_hold
+
+      # Rotation handling
       - conditions:
           - condition: template
             value_template: "{{ action is match 'dial_rotate_.*' }}"
@@ -87,7 +246,7 @@ actions:
                   0
                 {% endif %}
               target_lights: >
-                {% set button = states('input_text.lichtschalter_wohnzimmer_last_button') %}
+                {% set button = states(input_text_var) %}
                 {% if button == '1' %}
                   {{ input.button_1_lights.entity_id }}
                 {% elif button == '2' %}
