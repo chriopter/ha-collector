@@ -97,6 +97,7 @@ action:
       press_count: "{{ states(tap_counter) }}"
 
   - choose:
+      # Handle initial button press
       - conditions:
           - "{{ action_type is match('^button_[1-4]_press$') }}"
         sequence:
@@ -113,6 +114,7 @@ action:
               seconds: 1
           - counter.reset: "{{ tap_counter }}"
 
+      # Handle double press actions
       - conditions:
           - "{{ action_type is match('button_[1-4]_press_release') and press_count > '1' }}"
         sequence:
@@ -126,39 +128,34 @@ action:
               - conditions: ["{{ action_type == 'button_4_press_release' }}"]
                 sequence: !input button_4_double_press
 
+    # Default actions for single press and hold
     default:
       - choose:
+          # Handle single press actions
           - conditions:
               - "{{ action_type is match('button_[1-4]_press_release') }}"
             sequence:
               - delay:
                   milliseconds: 250
               - choose:
-                  - conditions:
-                      - "{{ press_count > '1' }}"
+                  - conditions: ["{{ press_count > '1' }}"]
                     sequence:
                       - stop: "Double tap detected"
-                  - conditions:
-                      - "{{ action_type == 'button_1_press_release' }}"
+                  - conditions: ["{{ action_type == 'button_1_press_release' }}"]
                     sequence: !input button_1_single_press
-                  - conditions:
-                      - "{{ action_type == 'button_2_press_release' }}"
+                  - conditions: ["{{ action_type == 'button_2_press_release' }}"]
                     sequence: !input button_2_single_press
-                  - conditions:
-                      - "{{ action_type == 'button_3_press_release' }}"
+                  - conditions: ["{{ action_type == 'button_3_press_release' }}"]
                     sequence: !input button_3_single_press
-                  - conditions:
-                      - "{{ action_type == 'button_4_press_release' }}"
+                  - conditions: ["{{ action_type == 'button_4_press_release' }}"]
                     sequence: !input button_4_single_press
-          - conditions:
-              - "{{ action_type == 'button_1_hold' }}"
+
+          # Handle hold actions
+          - conditions: ["{{ action_type == 'button_1_hold' }}"]
             sequence: !input button_1_hold
-          - conditions:
-              - "{{ action_type == 'button_2_hold' }}"
+          - conditions: ["{{ action_type == 'button_2_hold' }}"]
             sequence: !input button_2_hold
-          - conditions:
-              - "{{ action_type == 'button_3_hold' }}"
+          - conditions: ["{{ action_type == 'button_3_hold' }}"]
             sequence: !input button_3_hold
-          - conditions:
-              - "{{ action_type == 'button_4_hold' }}"
+          - conditions: ["{{ action_type == 'button_4_hold' }}"]
             sequence: !input button_4_hold
