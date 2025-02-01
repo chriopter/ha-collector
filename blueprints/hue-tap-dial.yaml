@@ -1,5 +1,5 @@
 blueprint:
-  name: Hue Tap Dial Combined
+  name: Hue Tap Dial v2
   domain: automation
   input:
     mqtt_topic:
@@ -8,12 +8,13 @@ blueprint:
       default: zigbee2mqtt/<device name>
     # Dimming inputs
     light_entity:
-      name: Light Entity
-      description: The light entity to control with dimming (optional)
-      default: ""
+      name: Light Entities
+      description: The light entities to control with dimming (optional)
+      default: []
       selector:
-        entity:
-          domain: light
+        target:
+          entity:
+            domain: light
     # RIGHT actions
     dial_rotate_right_step:
       name: Dial Rotate Right Step
@@ -205,12 +206,15 @@ action:
           - condition: template
             value_template: "{{ trigger.payload_json.action in changes }}"
         sequence:
-          - service: light.turn_on
-            target:
-              entity_id: !input light_entity
-            data:
-              brightness_step_pct: "{{ changes[action] }}"
-              transition: !input transition_time
+          - repeat:
+              for_each: "{{ expand(light_entity) | selectattr('state', 'eq', 'on') | list }}"
+              sequence:
+                - service: light.turn_on
+                  target:
+                    entity_id: "{{ repeat.item.entity_id }}"
+                  data:
+                    brightness_step_pct: "{{ changes[action] }}"
+                    transition: !input transition_time
 
   # Then handle button actions
   - choose:
