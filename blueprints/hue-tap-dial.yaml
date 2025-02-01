@@ -1,5 +1,5 @@
 blueprint:
-  name: Hue Tap Dial Z2M – Combined Dimming & Button Events
+  name: Hue Tap Dial Z2M 
   domain: automation
   input:
     mqtt_topic:
