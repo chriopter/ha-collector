@@ -1,0 +1,166 @@
+blueprint:
+  name: Hue Tap Dial Z2M
+  domain: automation
+  input:
+    mqtt_topic:
+      name: "MQTT Topic"
+      description: "MQTT topic for the Philips Hue Tap Dial Switch"
+      default: "zigbee2mqtt/<device name>"
+
+    ## Button 1 actions
+    button_1_single_press:
+      name: "Button 1 Single Press"
+      default: []
+      selector:
+        action: {}
+    button_1_double_press:
+      name: "Button 1 Double Press"
+      default: []
+      selector:
+        action: {}
+    button_1_hold:
+      name: "Button 1 Hold"
+      default: []
+      selector:
+        action: {}
+
+    ## Button 2 actions
+    button_2_single_press:
+      name: "Button 2 Single Press"
+      default: []
+      selector:
+        action: {}
+    button_2_double_press:
+      name: "Button 2 Double Press"
+      default: []
+      selector:
+        action: {}
+    button_2_hold:
+      name: "Button 2 Hold"
+      default: []
+      selector:
+        action: {}
+
+    ## Button 3 actions
+    button_3_single_press:
+      name: "Button 3 Single Press"
+      default: []
+      selector:
+        action: {}
+    button_3_double_press:
+      name: "Button 3 Double Press"
+      default: []
+      selector:
+        action: {}
+    button_3_hold:
+      name: "Button 3 Hold"
+      default: []
+      selector:
+        action: {}
+
+    ## Button 4 actions
+    button_4_single_press:
+      name: "Button 4 Single Press"
+      default: []
+      selector:
+        action: {}
+    button_4_double_press:
+      name: "Button 4 Double Press"
+      default: []
+      selector:
+        action: {}
+    button_4_hold:
+      name: "Button 4 Hold"
+      default: []
+      selector:
+        action: {}
+
+    ## Unified Dial Rotation actions (applies to all)
+    dial_rotate_clockwise:
+      name: "Dial Rotate Clockwise (Dim or De-dim)"
+      default: []
+      selector:
+        action: {}
+    dial_rotate_counter_clockwise:
+      name: "Dial Rotate Counter-Clockwise (Dim or De-dim)"
+      default: []
+      selector:
+        action: {}
+
+mode: parallel
+
+trigger:
+  - platform: mqtt
+    topic: !input mqtt_topic
+
+condition:
+  - condition: template
+    value_template: "{{ trigger.payload_json.action != '' }}"
+
+action:
+  - choose:
+      ## Button 1 events
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload_json.action == 'button_1_single_press' }}"
+        sequence: !input button_1_single_press
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload_json.action == 'button_1_double_press' }}"
+        sequence: !input button_1_double_press
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload_json.action == 'button_1_hold' }}"
+        sequence: !input button_1_hold
+
+      ## Button 2 events
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload_json.action == 'button_2_single_press' }}"
+        sequence: !input button_2_single_press
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload_json.action == 'button_2_double_press' }}"
+        sequence: !input button_2_double_press
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload_json.action == 'button_2_hold' }}"
+        sequence: !input button_2_hold
+
+      ## Button 3 events
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload_json.action == 'button_3_single_press' }}"
+        sequence: !input button_3_single_press
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload_json.action == 'button_3_double_press' }}"
+        sequence: !input button_3_double_press
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload_json.action == 'button_3_hold' }}"
+        sequence: !input button_3_hold
+
+      ## Button 4 events
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload_json.action == 'button_4_single_press' }}"
+        sequence: !input button_4_single_press
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload_json.action == 'button_4_double_press' }}"
+        sequence: !input button_4_double_press
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload_json.action == 'button_4_hold' }}"
+        sequence: !input button_4_hold
+
+      ## Unified Dial Rotation events
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload_json.action == 'dial_rotate_clockwise' }}"
+        sequence: !input dial_rotate_clockwise
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload_json.action == 'dial_rotate_counter_clockwise' }}"
+        sequence: !input dial_rotate_counter_clockwise
