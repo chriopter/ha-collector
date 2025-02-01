@@ -1,5 +1,5 @@
 blueprint:
-  name: Hue Tap Dial Z2M v11
+  name: Hue Tap Dial Z2M v12
   domain: automation
   input:
     mqtt_topic:
@@ -342,6 +342,7 @@ action:
                     target: "{{ input.dimming_action.target }}"
                     data:
                       brightness_step_pct: "{{ brightness_step }}"
-                      {% if input.transition_time > 0 %}
-                      transition: "{{ input.transition_time }}"
-                      {% endif %}
+                      transition: >
+                        {% if input.transition_time > 0 %}
+                        {{ input.transition_time }}
+                        {% endif %}
