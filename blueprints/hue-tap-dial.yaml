@@ -1,5 +1,5 @@
 blueprint:
-  name: Hue Tap Dial Advanced
+  name: Hue Tap Dial Advanced 2
   description: Control lights and covers with a Hue Tap Dial Switch with configurable dimming speeds
   domain: automation
   input:
