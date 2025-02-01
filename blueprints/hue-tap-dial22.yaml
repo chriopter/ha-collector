@@ -194,7 +194,7 @@ action:
               entity_id: !input light_entity
             data:
               brightness_pct: >
-                {% set current = state_attr(states[trigger.target.entity_id], 'brightness')|default(0)|float / 255 * 100 %}
+                {% set current = state_attr(light_entity, 'brightness')|default(0)|float / 255 * 100 %}
                 {% if trigger.payload_json.action in ['dial_rotate_right_step', 'dial_rotate_right_slow', 'dial_rotate_right_fast', 'brightness_step_up'] %}
                   {{ [current + 16, 100]|min }}
                 {% else %}
