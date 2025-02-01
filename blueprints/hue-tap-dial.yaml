@@ -1,525 +1,205 @@
 blueprint:
-  name: Hue Tap Dial Z2M
+  name: Hue Tap Dial Advanced
+  description: Control lights and covers with a Hue Tap Dial Switch with configurable dimming speeds
   domain: automation
   input:
+    # MQTT Topic
     mqtt_topic:
       name: MQTT Topic
-      description: Topic of the Philips Hue Tap Dial Switch
-      default: zigbee2mqtt/<device name>
-    tap_counter:
-      name: Counter Helper
-      description: Helper to Count
+      description: Topic of your Hue Tap Dial Switch
       selector:
-        entity:
-          domain: counter
-    last_pressed:
-      name: Last Pressed Input Text Helper
-      description: Helper to Map Rotation
-      selector:
-        entity:
-          domain: input_text
+        text:
 
-    # Button 1
-    button_1_single_press:
-      name: Button 1 Single Press
+    # Dimming Values
+    dim_step:
+      name: Step Dimming Value
+      description: Brightness change for step rotation (1-100)
+      default: 3
+      selector:
+        number:
+          min: 1
+          max: 100
+          unit_of_measurement: "%"
+    dim_slow:
+      name: Slow Dimming Value
+      description: Brightness change for slow rotation (1-100)
+      default: 7
+      selector:
+        number:
+          min: 1
+          max: 100
+          unit_of_measurement: "%"
+    dim_fast:
+      name: Fast Dimming Value
+      description: Brightness change for fast rotation (1-100)
+      default: 15
+      selector:
+        number:
+          min: 1
+          max: 100
+          unit_of_measurement: "%"
+    dim_step_brightness:
+      name: Brightness Step Value
+      description: Brightness change for brightness step (1-100)
+      default: 10
+      selector:
+        number:
+          min: 1
+          max: 100
+          unit_of_measurement: "%"
+
+    # Light Targets
+    button_1_lights:
+      name: Button 1 Lights
+      description: Lights controlled by Button 1
+      selector:
+        target:
+          entity:
+            domain: light
+    button_2_lights:
+      name: Button 2 Lights
+      description: Lights controlled by Button 2
+      selector:
+        target:
+          entity:
+            domain: light
+    button_3_lights:
+      name: Button 3 Lights
+      description: Lights controlled by Button 3
+      selector:
+        target:
+          entity:
+            domain: light
+    button_4_targets:
+      name: Button 4 Targets
+      description: Entities or areas controlled by Button 4
+      selector:
+        target:
+          entity:
+            domain: cover
+
+    # Button Actions
+    button_1_press:
+      name: Button 1 Press Action
       default: []
       selector:
-        action:
-    button_1_double_press:
-      name: Button 1 Double Press
-      default: []
-      selector:
-        action:
+        action: {}
     button_1_hold:
-      name: Button 1 Hold
+      name: Button 1 Hold Action
       default: []
       selector:
-        action:
-    # Button 1 Rotate Counter-Clockwise Actions
-    button_1_rotate_step_counter_clockwise:
-      name: Button 1 Rotate Step Counter-Clockwise
+        action: {}
+    button_2_press:
+      name: Button 2 Press Action
       default: []
       selector:
-        action:
-    button_1_rotate_slow_counter_clockwise:
-      name: Button 1 Rotate Slow Counter-Clockwise
-      default: []
-      selector:
-        action:
-    button_1_brightness_step_down:
-      name: Button 1 Brightness Step Down
-      default: []
-      selector:
-        action:
-    button_1_rotate_fast_counter_clockwise:
-      name: Button 1 Rotate Fast Counter-Clockwise
-      default: []
-      selector:
-        action:
-
-    # Button 1 Rotate Clockwise Actions
-    button_1_rotate_step_clockwise:
-      name: Button 1 Rotate Step Clockwise
-      default: []
-      selector:
-        action:
-    button_1_rotate_slow_clockwise:
-      name: Button 1 Rotate Slow Clockwise
-      default: []
-      selector:
-        action:
-    button_1_brightness_step_up:
-      name: Button 1 Brightness Step Up
-      default: []
-      selector:
-        action:
-    button_1_rotate_fast_clockwise:
-      name: Button 1 Rotate Fast Clockwise
-      default: []
-      selector:
-        action:
-
-    # Button 2
-    button_2_single_press:
-      name: Button 2 Single Press
-      default: []
-      selector:
-        action:
-    button_2_double_press:
-      name: Button 2 Double Press
-      default: []
-      selector:
-        action:
+        action: {}
     button_2_hold:
-      name: Button 2 Hold
+      name: Button 2 Hold Action
       default: []
       selector:
-        action:
-    # Button 2 Rotate Counter-Clockwise Actions
-    button_2_rotate_step_counter_clockwise:
-      name: Button 2 Rotate Step Counter-Clockwise
+        action: {}
+    button_3_press:
+      name: Button 3 Press Action
       default: []
       selector:
-        action:
-    button_2_rotate_slow_counter_clockwise:
-      name: Button 2 Rotate Slow Counter-Clockwise
-      default: []
-      selector:
-        action:
-    button_2_brightness_step_down:
-      name: Button 2 Brightness Step Down
-      default: []
-      selector:
-        action:
-    button_2_rotate_fast_counter_clockwise:
-      name: Button 2 Rotate Fast Counter-Clockwise
-      default: []
-      selector:
-        action:
-
-    # Button 2 Rotate Clockwise Actions
-    button_2_rotate_step_clockwise:
-      name: Button 2 Rotate Step Clockwise
-      default: []
-      selector:
-        action:
-    button_2_rotate_slow_clockwise:
-      name: Button 2 Rotate Slow Clockwise
-      default: []
-      selector:
-        action:
-    button_2_brightness_step_up:
-      name: Button 2 Brightness Step Up
-      default: []
-      selector:
-        action:
-    button_2_rotate_fast_clockwise:
-      name: Button 2 Rotate Fast Clockwise
-      default: []
-      selector:
-        action:
-
-    # Button 3
-    button_3_single_press:
-      name: Button 3 Single Press
-      default: []
-      selector:
-        action:
-    button_3_double_press:
-      name: Button 3 Double Press
-      default: []
-      selector:
-        action:
+        action: {}
     button_3_hold:
-      name: Button 3 Hold
+      name: Button 3 Hold Action
       default: []
       selector:
-        action:
-    # Button 3 Rotate Counter-Clockwise Actions
-    button_3_rotate_step_counter_clockwise:
-      name: Button 3 Rotate Step Counter-Clockwise
+        action: {}
+    button_4_press:
+      name: Button 4 Press Action
       default: []
       selector:
-        action:
-    button_3_rotate_slow_counter_clockwise:
-      name: Button 3 Rotate Slow Counter-Clockwise
-      default: []
-      selector:
-        action:
-    button_3_brightness_step_down:
-      name: Button 3 Brightness Step Down
-      default: []
-      selector:
-        action:
-    button_3_rotate_fast_counter_clockwise:
-      name: Button 3 Rotate Fast Counter-Clockwise
-      default: []
-      selector:
-        action:
-
-    # Button 3 Rotate Clockwise Actions
-    button_3_rotate_step_clockwise:
-      name: Button 3 Rotate Step Clockwise
-      default: []
-      selector:
-        action:
-    button_3_rotate_slow_clockwise:
-      name: Button 3 Rotate Slow Clockwise
-      default: []
-      selector:
-        action:
-    button_3_brightness_step_up:
-      name: Button 3 Brightness Step Up
-      default: []
-      selector:
-        action:
-    button_3_rotate_fast_clockwise:
-      name: Button 3 Rotate Fast Clockwise
-      default: []
-      selector:
-        action:
-
-    # Button 4
-    button_4_single_press:
-      name: Button 4 Single Press
-      default: []
-      selector:
-        action:
-    button_4_double_press:
-      name: Button 4 Double Press
-      default: []
-      selector:
-        action:
+        action: {}
     button_4_hold:
-      name: Button 4 Hold
+      name: Button 4 Hold Action
       default: []
       selector:
-        action:
-    # Button 4 Rotate Counter-Clockwise Actions
-    button_4_rotate_step_counter_clockwise:
-      name: Button 4 Rotate Step Counter-Clockwise
-      default: []
-      selector:
-        action:
-    button_4_rotate_slow_counter_clockwise:
-      name: Button 4 Rotate Slow Counter-Clockwise
-      default: []
-      selector:
-        action:
-    button_4_brightness_step_down:
-      name: Button 4 Brightness Step Down
-      default: []
-      selector:
-        action:
-    button_4_rotate_fast_counter_clockwise:
-      name: Button 4 Rotate Fast Counter-Clockwise
-      default: []
-      selector:
-        action:
+        action: {}
 
-    # Button 4 Rotate Clockwise Actions
-    button_4_rotate_step_clockwise:
-      name: Button 4 Rotate Step Clockwise
-      default: []
-      selector:
-        action:
-    button_4_rotate_slow_clockwise:
-      name: Button 4 Rotate Slow Clockwise
-      default: []
-      selector:
-        action:
-    button_4_brightness_step_up:
-      name: Button 4 Brightness Step Up
-      default: []
-      selector:
-        action:
-    button_4_rotate_fast_clockwise:
-      name: Button 4 Rotate Fast Clockwise
-      default: []
-      selector:
-        action:
+triggers:
+  - topic: !input mqtt_topic
+    trigger: mqtt
 
-mode: parallel
-max: 10
-max_exceeded: silent
+variables:
+  action: "{{ trigger.payload_json.action }}"
 
-trigger:
-  - platform: mqtt
-    topic: !input mqtt_topic
-
-condition:
-  - condition: template
-    value_template: "{{ trigger.payload_json.action != '' }}"
-
-action:
-  - variables:
-      input_text_var: !input last_pressed
-      counter_var: !input tap_counter
-
+actions:
   - choose:
+      # Button 1
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload_json.action is match('^button_[1-4]_press$') }}"
+            value_template: "{{ action == 'button_1_press_release' }}"
+        sequence: !input button_1_press
+      - conditions:
+          - condition: template
+            value_template: "{{ action == 'button_1_hold' }}"
+        sequence: !input button_1_hold
+
+      # Button 2
+      - conditions:
+          - condition: template
+            value_template: "{{ action == 'button_2_press_release' }}"
+        sequence: !input button_2_press
+      - conditions:
+          - condition: template
+            value_template: "{{ action == 'button_2_hold' }}"
+        sequence: !input button_2_hold
+
+      # Button 3
+      - conditions:
+          - condition: template
+            value_template: "{{ action == 'button_3_press_release' }}"
+        sequence: !input button_3_press
+      - conditions:
+          - condition: template
+            value_template: "{{ action == 'button_3_hold' }}"
+        sequence: !input button_3_hold
+
+      # Button 4
+      - conditions:
+          - condition: template
+            value_template: "{{ action == 'button_4_press_release' }}"
+        sequence: !input button_4_press
+      - conditions:
+          - condition: template
+            value_template: "{{ action == 'button_4_hold' }}"
+        sequence: !input button_4_hold
+
+      # Rotation handling
+      - conditions:
+          - condition: template
+            value_template: "{{ action is match 'dial_rotate_.*' }}"
         sequence:
-          - if:
-              - condition: template
-                value_template: "{{ trigger.payload_json.action | regex_replace(find='[^1-4]', replace='') != states(input_text_var) }}"
-            then:
-              - service: counter.reset
-                target:
-                  entity_id: "{{ counter_var }}"
-          - service: input_text.set_value
+          - variables:
+              brightness_change: |
+                {% set changes = {
+                  'dial_rotate_right_step': input.dim_step,
+                  'dial_rotate_right_slow': input.dim_slow,
+                  'dial_rotate_right_fast': input.dim_fast,
+                  'dial_rotate_left_step': -input.dim_step,
+                  'dial_rotate_left_slow': -input.dim_slow,
+                  'dial_rotate_left_fast': -input.dim_fast,
+                  'brightness_step_up': input.dim_step_brightness,
+                  'brightness_step_down': -input.dim_step_brightness
+                } %} {{ changes[action] | default(0) }}
+              target_lights: >
+                {% set button = states('input_text.lichtschalter_wohnzimmer_last_button') %}
+                {% if button == '1' %}
+                  {{ input.button_1_lights.entity_id }}
+                {% elif button == '2' %}
+                  {{ input.button_2_lights.entity_id }}
+                {% elif button == '3' %}
+                  {{ input.button_3_lights.entity_id }}
+                {% else %}
+                  {{ input.button_1_lights.entity_id }}
+                {% endif %}
+          - target:
+              entity_id: "{{ target_lights }}"
+            action: light.turn_on
             data:
-              value: "{{ trigger.payload_json.action | regex_replace(find='[^1-4]', replace='') }}"
-            target:
-              entity_id: "{{ input_text_var }}"
-          - service: counter.increment
-            target:
-              entity_id: "{{ counter_var }}"
-          - delay:
-              seconds: 1
-          - service: counter.reset
-            target:
-              entity_id: "{{ counter_var }}"
-      - conditions:
-          - condition: template
-            value_template: "{{ trigger.payload_json.action is match('button_[1-4]_press_release') and states(counter_var) > '1' }}"
-        sequence:
-          - choose:
-              - conditions:
-                  - condition: template
-                    value_template: "{{ trigger.payload_json.action == 'button_1_press_release' }}"
-                sequence: !input button_1_double_press
-              - conditions:
-                  - condition: template
-                    value_template: "{{ trigger.payload_json.action == 'button_2_press_release' }}"
-                sequence: !input button_2_double_press
-              - conditions:
-                  - condition: template
-                    value_template: "{{ trigger.payload_json.action == 'button_3_press_release' }}"
-                sequence: !input button_3_double_press
-              - conditions:
-                  - condition: template
-                    value_template: "{{ trigger.payload_json.action == 'button_4_press_release' }}"
-                sequence: !input button_4_double_press
-    default:
-      - if:
-          - condition: template
-            value_template: "{{ trigger.payload_json.action is match('button_[1-4]_press_release') }}"
-        then:
-          - delay:
-              milliseconds: 250
-          - if:
-              - condition: template
-                value_template: "{{ states(counter_var) > '1' }}"
-            then:
-              - stop: Double tap detected
-      - choose:
-          - conditions:
-              - condition: template
-                value_template: "{{ states(input_text_var) == '1' and trigger.payload_json.action is match('^dial_rotate_') }}"
-            sequence:
-              - choose:
-                  # Counter-clockwise rotations for button 1
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'dial_rotate_left_step' }}"
-                    sequence: !input button_1_rotate_step_counter_clockwise
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'dial_rotate_left_slow' }}"
-                    sequence: !input button_1_rotate_slow_counter_clockwise
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'brightness_step_down' }}"
-                    sequence: !input button_1_brightness_step_down
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'dial_rotate_left_fast' }}"
-                    sequence: !input button_1_rotate_fast_counter_clockwise
-                  # Clockwise rotations for button 1
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'dial_rotate_right_step' }}"
-                    sequence: !input button_1_rotate_step_clockwise
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'dial_rotate_right_slow' }}"
-                    sequence: !input button_1_rotate_slow_clockwise
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'brightness_step_up' }}"
-                    sequence: !input button_1_brightness_step_up
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'dial_rotate_right_fast' }}"
-                    sequence: !input button_1_rotate_fast_clockwise
-          - conditions:
-              - condition: template
-                value_template: "{{ states(input_text_var) == '2' and trigger.payload_json.action is match('^dial_rotate_') }}"
-            sequence:
-              - choose:
-                  # Counter-clockwise rotations for button 2
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'dial_rotate_left_step' }}"
-                    sequence: !input button_2_rotate_step_counter_clockwise
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'dial_rotate_left_slow' }}"
-                    sequence: !input button_2_rotate_slow_counter_clockwise
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'brightness_step_down' }}"
-                    sequence: !input button_2_brightness_step_down
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'dial_rotate_left_fast' }}"
-                    sequence: !input button_2_rotate_fast_counter_clockwise
-                  # Clockwise rotations for button 2
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'dial_rotate_right_step' }}"
-                    sequence: !input button_2_rotate_step_clockwise
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'dial_rotate_right_slow' }}"
-                    sequence: !input button_2_rotate_slow_clockwise
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'brightness_step_up' }}"
-                    sequence: !input button_2_brightness_step_up
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'dial_rotate_right_fast' }}"
-                    sequence: !input button_2_rotate_fast_clockwise
-          - conditions:
-              - condition: template
-                value_template: "{{ states(input_text_var) == '3' and trigger.payload_json.action is match('^dial_rotate_') }}"
-            sequence:
-              - choose:
-                  # Counter-clockwise rotations for button 3
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'dial_rotate_left_step' }}"
-                    sequence: !input button_3_rotate_step_counter_clockwise
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'dial_rotate_left_slow' }}"
-                    sequence: !input button_3_rotate_slow_counter_clockwise
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'brightness_step_down' }}"
-                    sequence: !input button_3_brightness_step_down
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'dial_rotate_left_fast' }}"
-                    sequence: !input button_3_rotate_fast_counter_clockwise
-                  # Clockwise rotations for button 3
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'dial_rotate_right_step' }}"
-                    sequence: !input button_3_rotate_step_clockwise
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'dial_rotate_right_slow' }}"
-                    sequence: !input button_3_rotate_slow_clockwise
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'brightness_step_up' }}"
-                    sequence: !input button_3_brightness_step_up
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'dial_rotate_right_fast' }}"
-                    sequence: !input button_3_rotate_fast_clockwise
-          - conditions:
-              - condition: template
-                value_template: "{{ states(input_text_var) == '4' and trigger.payload_json.action is match('^dial_rotate_') }}"
-            sequence:
-              - choose:
-                  # Counter-clockwise rotations for button 4
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'dial_rotate_left_step' }}"
-                    sequence: !input button_4_rotate_step_counter_clockwise
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'dial_rotate_left_slow' }}"
-                    sequence: !input button_4_rotate_slow_counter_clockwise
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'brightness_step_down' }}"
-                    sequence: !input button_4_brightness_step_down
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'dial_rotate_left_fast' }}"
-                    sequence: !input button_4_rotate_fast_counter_clockwise
-                  # Clockwise rotations for button 4
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'dial_rotate_right_step' }}"
-                    sequence: !input button_4_rotate_step_clockwise
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'dial_rotate_right_slow' }}"
-                    sequence: !input button_4_rotate_slow_clockwise
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'brightness_step_up' }}"
-                    sequence: !input button_4_brightness_step_up
-                  - conditions:
-                      - condition: template
-                        value_template: "{{ trigger.payload_json.action == 'dial_rotate_right_fast' }}"
-                    sequence: !input button_4_rotate_fast_clockwise
-          - conditions:
-              - condition: template
-                value_template: "{{ trigger.payload_json.action == 'button_1_press_release' }}"
-            sequence: !input button_1_single_press
-          - conditions:
-              - condition: template
-                value_template: "{{ trigger.payload_json.action == 'button_1_hold' }}"
-            sequence: !input button_1_hold
-          - conditions:
-              - condition: template
-                value_template: "{{ trigger.payload_json.action == 'button_2_press_release' }}"
-            sequence: !input button_2_single_press
-          - conditions:
-              - condition: template
-                value_template: "{{ trigger.payload_json.action == 'button_2_hold' }}"
-            sequence: !input button_2_hold
-          - conditions:
-              - condition: template
-                value_template: "{{ trigger.payload_json.action == 'button_3_press_release' }}"
-            sequence: !input button_3_single_press
-          - conditions:
-              - condition: template
-                value_template: "{{ trigger.payload_json.action == 'button_3_hold' }}"
-            sequence: !input button_3_hold
-          - conditions:
-              - condition: template
-                value_template: "{{ trigger.payload_json.action == 'button_4_press_release' }}"
-            sequence: !input button_4_single_press
-          - conditions:
-              - condition: template
-                value_template: "{{ trigger.payload_json.action == 'button_4_hold' }}"
-            sequence: !input button_4_hold
+              transition: 1
+              brightness_step_pct: "{{ brightness_change }}"
