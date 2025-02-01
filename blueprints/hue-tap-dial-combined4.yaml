@@ -175,6 +175,7 @@ trigger:
     topic: !input mqtt_topic
 
 variables:
+  action: "{{ trigger.payload_json.action }}"
   changes:
     dial_rotate_right_step: !input dial_rotate_right_step
     dial_rotate_right_slow: !input dial_rotate_right_slow
