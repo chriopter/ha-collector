@@ -1,5 +1,5 @@
 blueprint:
-  name: Hue Tap Dial Z2M v16
+  name: Hue Tap Dial Z2M v17
   domain: automation
   input:
     mqtt_topic:
@@ -90,6 +90,48 @@ blueprint:
       default: []
       selector:
         action:
+    
+    # Rotation Events
+    dial_rotate_right_step:
+      name: Dial Rotate Right Step
+      default: []
+      selector:
+        action:
+    dial_rotate_right_slow:
+      name: Dial Rotate Right Slow
+      default: []
+      selector:
+        action:
+    dial_rotate_right_fast:
+      name: Dial Rotate Right Fast
+      default: []
+      selector:
+        action:
+    brightness_step_up:
+      name: Brightness Step Up
+      default: []
+      selector:
+        action:
+    dial_rotate_left_step:
+      name: Dial Rotate Left Step
+      default: []
+      selector:
+        action:
+    dial_rotate_left_slow:
+      name: Dial Rotate Left Slow
+      default: []
+      selector:
+        action:
+    dial_rotate_left_fast:
+      name: Dial Rotate Left Fast
+      default: []
+      selector:
+        action:
+    brightness_step_down:
+      name: Brightness Step Down
+      default: []
+      selector:
+        action:
 
 mode: parallel
 max: 10
@@ -169,3 +211,35 @@ action:
           - condition: template
             value_template: "{{ trigger.payload_json.action == 'button_4_hold_release' }}"
         sequence: !input button_4_hold_release
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload_json.action == 'dial_rotate_right_step' }}"
+        sequence: !input dial_rotate_right_step
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload_json.action == 'dial_rotate_right_slow' }}"
+        sequence: !input dial_rotate_right_slow
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload_json.action == 'dial_rotate_right_fast' }}"
+        sequence: !input dial_rotate_right_fast
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload_json.action == 'brightness_step_up' }}"
+        sequence: !input brightness_step_up
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload_json.action == 'dial_rotate_left_step' }}"
+        sequence: !input dial_rotate_left_step
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload_json.action == 'dial_rotate_left_slow' }}"
+        sequence: !input dial_rotate_left_slow
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload_json.action == 'dial_rotate_left_fast' }}"
+        sequence: !input dial_rotate_left_fast
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.payload_json.action == 'brightness_step_down' }}"
+        sequence: !input brightness_step_down
