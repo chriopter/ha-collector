@@ -1,5 +1,5 @@
 blueprint:
-  name: Hue Tap Dial Z2M 
+  name: Hue Tap Dial Z2M
   domain: automation
   input:
     mqtt_topic:
@@ -7,7 +7,6 @@ blueprint:
       description: "MQTT topic for the Philips Hue Tap Dial Switch"
       default: "zigbee2mqtt/<device name>"
 
-    ## Target Light for Dimming (applies to all dial events)
     target_light:
       name: "Target Light for Dimming"
       description: "Choose the light to control with the dial rotations"
@@ -103,66 +102,6 @@ blueprint:
       selector:
         action: {}
 
-    ## Dial (dimming) events – Right (increase brightness)
-    dial_rotate_right_step:
-      name: "Dial Rotate Right – Step"
-      description: "A small (step) increase in brightness."
-      default: []
-      selector:
-        text:
-          placeholder: "Event: dial_rotate_right_step"
-    dial_rotate_right_slow:
-      name: "Dial Rotate Right – Slow"
-      description: "A slow increase in brightness."
-      default: []
-      selector:
-        text:
-          placeholder: "Event: dial_rotate_right_slow"
-    brightness_step_up:
-      name: "Brightness Step Up (Quarter Up)"
-      description: "A larger, quarter-step increase in brightness."
-      default: []
-      selector:
-        text:
-          placeholder: "Event: brightness_step_up"
-    dial_rotate_right_fast:
-      name: "Dial Rotate Right – Fast"
-      description: "A fast increase in brightness."
-      default: []
-      selector:
-        text:
-          placeholder: "Event: dial_rotate_right_fast"
-
-    ## Dial (dimming) events – Left (decrease brightness)
-    dial_rotate_left_step:
-      name: "Dial Rotate Left – Step"
-      description: "A small (step) decrease in brightness."
-      default: []
-      selector:
-        text:
-          placeholder: "Event: dial_rotate_left_step"
-    dial_rotate_left_slow:
-      name: "Dial Rotate Left – Slow"
-      description: "A slow decrease in brightness."
-      default: []
-      selector:
-        text:
-          placeholder: "Event: dial_rotate_left_slow"
-    brightness_step_down:
-      name: "Brightness Step Down (Quarter Down)"
-      description: "A larger, quarter-step decrease in brightness."
-      default: []
-      selector:
-        text:
-          placeholder: "Event: brightness_step_down"
-    dial_rotate_left_fast:
-      name: "Dial Rotate Left – Fast"
-      description: "A fast decrease in brightness."
-      default: []
-      selector:
-        text:
-          placeholder: "Event: dial_rotate_left_fast"
-
     ## Numeric inputs for brightness adjustment (in percent)
     dial_rotate_right_step_pct:
       name: "Right – Step Increase (%)"
@@ -244,13 +183,12 @@ trigger:
   - platform: mqtt
     topic: !input mqtt_topic
 
-# We require a non-empty payload.
 condition:
   - condition: template
     value_template: "{{ trigger.payload != '' }}"
 
 action:
-  # Create a variable 'event' that uses the JSON field (if available) or the plain text payload.
+  # Normalize the incoming event: if JSON, use its 'action' key; otherwise, use the raw payload.
   - variables:
       event: >
         {% if trigger.payload.startswith('{') %}
@@ -259,7 +197,7 @@ action:
           {{ trigger.payload }}
         {% endif %}
   - choose:
-      # ––– Button events –––
+      # ––– Button Events –––
       # Button 1
       - conditions:
           - condition: template
@@ -332,7 +270,7 @@ action:
             value_template: "{{ event == 'button_4_hold_release' }}"
         sequence: !input button_4_hold_release
 
-      # ––– Dial (dimming) events –––
+      # ––– Dial (Dimming) Events –––
       # Right / Increase brightness
       - conditions:
           - condition: template
@@ -380,7 +318,6 @@ action:
             target:
               entity_id: !input target_light
             data:
-              # Multiply by -1 to decrease brightness.
               brightness_step_pct: -1 * !input dial_rotate_left_step_pct
       - conditions:
           - condition: template
