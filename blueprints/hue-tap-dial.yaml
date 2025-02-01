@@ -1,5 +1,5 @@
 blueprint:
-  name: Hue Tap Dial Z2M v10
+  name: Hue Tap Dial Z2M v11
   domain: automation
   input:
     mqtt_topic:
@@ -206,9 +206,12 @@ condition:
     value_template: "{{ trigger.payload_json.action is defined }}"
 
 action:
-  # Normalize the incoming event and calculate dimming values:
+  # Set initial variables
   - variables:
       event: "{{ trigger.payload_json.action }}"
+
+  # Calculate brightness step based on event
+  - variables:
       brightness_step: >
         {% if event == 'dial_rotate_right_step' %}
           {{ input.step_size_right_step }}
@@ -229,19 +232,19 @@ action:
         {% else %}
           {{ 0 }}
         {% endif %}
+
+  # Check dimming direction and light states
+  - variables:
       is_dim_up: "{{ brightness_step > 0 }}"
-      # Check if target lights are on (user needs to adapt this to their lights)
       is_light_on: >
         {% set lights = expand(input.dimming_action.target.entity_id) 
            if input.dimming_action.target.entity_id is defined 
            else [] %}
-        {% for light in lights %}
-          {% if light.state == 'on' %}
-            {{ true }}
-            {% break %}
-          {% endif %}
-        {% endfor %}
-        {{ false }}
+        {% if lights | selectattr('state', 'eq', 'on') | list | count > 0 %}
+          {{ true }}
+        {% else %}
+          {{ false }}
+        {% endif %}
   - choose:
       # ––– Button Events –––
       - conditions:
@@ -339,4 +342,6 @@ action:
                     target: "{{ input.dimming_action.target }}"
                     data:
                       brightness_step_pct: "{{ brightness_step }}"
+                      {% if input.transition_time > 0 %}
                       transition: "{{ input.transition_time }}"
+                      {% endif %}
