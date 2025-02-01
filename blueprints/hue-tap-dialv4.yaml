@@ -1,5 +1,5 @@
 blueprint:
-  name: Hue Tap Dial Advanced v3
+  name: Hue Tap Dial Advanced
   description: Control lights and covers with a Hue Tap Dial Switch with configurable dimming speeds
   domain: automation
 
@@ -8,6 +8,7 @@ blueprint:
     mqtt_topic:
       name: MQTT Topic
       description: Topic of your Hue Tap Dial Switch
+      default: zigbee2mqtt/huetap
       selector:
         text:
 
@@ -26,38 +27,168 @@ blueprint:
         entity:
           domain: input_text
 
-    # Dimming Values
-    dim_step:
-      name: Step Dimming Value
+    # Dimming Values for Light 1
+    dim_1_step:
+      name: Light 1 - Step Dimming Value
       description: Brightness change for step rotation (1-100)
       default: 3
+      required: false
       selector:
         number:
           min: 1
           max: 100
           unit_of_measurement: "%"
-    dim_slow:
-      name: Slow Dimming Value
+    dim_1_slow:
+      name: Light 1 - Slow Dimming Value
       description: Brightness change for slow rotation (1-100)
       default: 7
+      required: false
       selector:
         number:
           min: 1
           max: 100
           unit_of_measurement: "%"
-    dim_fast:
-      name: Fast Dimming Value
+    dim_1_fast:
+      name: Light 1 - Fast Dimming Value
       description: Brightness change for fast rotation (1-100)
       default: 15
+      required: false
       selector:
         number:
           min: 1
           max: 100
           unit_of_measurement: "%"
-    dim_step_brightness:
-      name: Brightness Step Value
+    dim_1_brightness:
+      name: Light 1 - Brightness Step Value
       description: Brightness change for brightness step (1-100)
       default: 10
+      required: false
+      selector:
+        number:
+          min: 1
+          max: 100
+          unit_of_measurement: "%"
+
+    # Dimming Values for Light 2
+    dim_2_step:
+      name: Light 2 - Step Dimming Value
+      description: Brightness change for step rotation (1-100)
+      default: 3
+      required: false
+      selector:
+        number:
+          min: 1
+          max: 100
+          unit_of_measurement: "%"
+    dim_2_slow:
+      name: Light 2 - Slow Dimming Value
+      description: Brightness change for slow rotation (1-100)
+      default: 7
+      required: false
+      selector:
+        number:
+          min: 1
+          max: 100
+          unit_of_measurement: "%"
+    dim_2_fast:
+      name: Light 2 - Fast Dimming Value
+      description: Brightness change for fast rotation (1-100)
+      default: 15
+      required: false
+      selector:
+        number:
+          min: 1
+          max: 100
+          unit_of_measurement: "%"
+    dim_2_brightness:
+      name: Light 2 - Brightness Step Value
+      description: Brightness change for brightness step (1-100)
+      default: 10
+      required: false
+      selector:
+        number:
+          min: 1
+          max: 100
+          unit_of_measurement: "%"
+
+    # Dimming Values for Light 3
+    dim_3_step:
+      name: Light 3 - Step Dimming Value
+      description: Brightness change for step rotation (1-100)
+      default: 3
+      required: false
+      selector:
+        number:
+          min: 1
+          max: 100
+          unit_of_measurement: "%"
+    dim_3_slow:
+      name: Light 3 - Slow Dimming Value
+      description: Brightness change for slow rotation (1-100)
+      default: 7
+      required: false
+      selector:
+        number:
+          min: 1
+          max: 100
+          unit_of_measurement: "%"
+    dim_3_fast:
+      name: Light 3 - Fast Dimming Value
+      description: Brightness change for fast rotation (1-100)
+      default: 15
+      required: false
+      selector:
+        number:
+          min: 1
+          max: 100
+          unit_of_measurement: "%"
+    dim_3_brightness:
+      name: Light 3 - Brightness Step Value
+      description: Brightness change for brightness step (1-100)
+      default: 10
+      required: false
+      selector:
+        number:
+          min: 1
+          max: 100
+          unit_of_measurement: "%"
+
+    # Dimming Values for Light 4
+    dim_4_step:
+      name: Light 4 - Step Dimming Value
+      description: Brightness change for step rotation (1-100)
+      default: 3
+      required: false
+      selector:
+        number:
+          min: 1
+          max: 100
+          unit_of_measurement: "%"
+    dim_4_slow:
+      name: Light 4 - Slow Dimming Value
+      description: Brightness change for slow rotation (1-100)
+      default: 7
+      required: false
+      selector:
+        number:
+          min: 1
+          max: 100
+          unit_of_measurement: "%"
+    dim_4_fast:
+      name: Light 4 - Fast Dimming Value
+      description: Brightness change for fast rotation (1-100)
+      default: 15
+      required: false
+      selector:
+        number:
+          min: 1
+          max: 100
+          unit_of_measurement: "%"
+    dim_4_brightness:
+      name: Light 4 - Brightness Step Value
+      description: Brightness change for brightness step (1-100)
+      default: 10
+      required: false
       selector:
         number:
           min: 1
@@ -68,6 +199,7 @@ blueprint:
     button_1_lights:
       name: Button 1 Lights
       description: Lights controlled by Button 1
+      required: false
       selector:
         target:
           entity:
@@ -75,6 +207,7 @@ blueprint:
     button_2_lights:
       name: Button 2 Lights
       description: Lights controlled by Button 2
+      required: false
       selector:
         target:
           entity:
@@ -82,57 +215,67 @@ blueprint:
     button_3_lights:
       name: Button 3 Lights
       description: Lights controlled by Button 3
+      required: false
       selector:
         target:
           entity:
             domain: light
-    button_4_targets:
-      name: Button 4 Targets
-      description: Entities or areas controlled by Button 4
+    button_4_lights:
+      name: Button 4 Lights
+      description: Lights controlled by Button 4
+      required: false
       selector:
         target:
           entity:
-            domain: cover
+            domain: light
 
     # Button Actions
     button_1_press:
       name: Button 1 Press Action
       default: []
+      required: false
       selector:
         action: {}
     button_1_hold:
       name: Button 1 Hold Action
       default: []
+      required: false
       selector:
         action: {}
     button_2_press:
       name: Button 2 Press Action
       default: []
+      required: false
       selector:
         action: {}
     button_2_hold:
       name: Button 2 Hold Action
       default: []
+      required: false
       selector:
         action: {}
     button_3_press:
       name: Button 3 Press Action
       default: []
+      required: false
       selector:
         action: {}
     button_3_hold:
       name: Button 3 Hold Action
       default: []
+      required: false
       selector:
         action: {}
     button_4_press:
       name: Button 4 Press Action
       default: []
+      required: false
       selector:
         action: {}
     button_4_hold:
       name: Button 4 Hold Action
       default: []
+      required: false
       selector:
         action: {}
 
@@ -221,44 +364,58 @@ action:
             value_template: "{{ action is match 'dial_rotate_.*' }}"
         sequence:
           - variables:
+              button: "{{ states(input_text_var) }}"
+              dimming_values:
+                '1':
+                  step: !input dim_1_step
+                  slow: !input dim_1_slow
+                  fast: !input dim_1_fast
+                  brightness: !input dim_1_brightness
+                '2':
+                  step: !input dim_2_step
+                  slow: !input dim_2_slow
+                  fast: !input dim_2_fast
+                  brightness: !input dim_2_brightness
+                '3':
+                  step: !input dim_3_step
+                  slow: !input dim_3_slow
+                  fast: !input dim_3_fast
+                  brightness: !input dim_3_brightness
+                '4':
+                  step: !input dim_4_step
+                  slow: !input dim_4_slow
+                  fast: !input dim_4_fast
+                  brightness: !input dim_4_brightness
               brightness_change: >
-                {% set step = input.dim_step | int %}
-                {% set slow = input.dim_slow | int %}
-                {% set fast = input.dim_fast | int %}
-                {% set brightness = input.dim_step_brightness | int %}
+                {% set values = dimming_values[button] %}
                 {% if action == 'dial_rotate_right_step' %}
-                  {{ step }}
+                  {{ values.step }}
                 {% elif action == 'dial_rotate_right_slow' %}
-                  {{ slow }}
+                  {{ values.slow }}
                 {% elif action == 'dial_rotate_right_fast' %}
-                  {{ fast }}
+                  {{ values.fast }}
                 {% elif action == 'dial_rotate_left_step' %}
-                  {{ -step }}
+                  {{ -values.step }}
                 {% elif action == 'dial_rotate_left_slow' %}
-                  {{ -slow }}
+                  {{ -values.slow }}
                 {% elif action == 'dial_rotate_left_fast' %}
-                  {{ -fast }}
+                  {{ -values.fast }}
                 {% elif action == 'brightness_step_up' %}
-                  {{ brightness }}
+                  {{ values.brightness }}
                 {% elif action == 'brightness_step_down' %}
-                  {{ -brightness }}
+                  {{ -values.brightness }}
                 {% else %}
                   0
                 {% endif %}
-              target_lights: >
-                {% set button = states(input_text_var) %}
-                {% if button == '1' %}
-                  {{ input.button_1_lights.entity_id }}
-                {% elif button == '2' %}
-                  {{ input.button_2_lights.entity_id }}
-                {% elif button == '3' %}
-                  {{ input.button_3_lights.entity_id }}
-                {% else %}
-                  {{ input.button_1_lights.entity_id }}
-                {% endif %}
-          - target:
-              entity_id: "{{ target_lights }}"
-            action: light.turn_on
-            data:
-              transition: 1
-              brightness_step_pct: "{{ brightness_change }}"
+              target_button: "button_{{ button }}_lights"
+              target_lights: "{{ expand(target_button) }}"
+          - if:
+              - condition: template
+                value_template: "{{ target_lights != None }}"
+            then:
+              - service: light.turn_on
+                target:
+                  entity_id: "{{ target_lights }}"
+                data:
+                  transition: 1
+                  brightness_step_pct: "{{ brightness_change }}"
