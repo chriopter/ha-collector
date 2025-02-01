@@ -1,5 +1,5 @@
 blueprint:
-  name: Hue Tap Dial Z2M v9
+  name: Hue Tap Dial Z2M v10
   domain: automation
   input:
     mqtt_topic:
@@ -334,4 +334,9 @@ action:
               - conditions:
                   - condition: template
                     value_template: "{{ not is_dim_up or is_light_on }}"
-                sequence: "{{ input.dimming_action }}"
+                sequence:
+                  - service: light.turn_on
+                    target: "{{ input.dimming_action.target }}"
+                    data:
+                      brightness_step_pct: "{{ brightness_step }}"
+                      transition: "{{ input.transition_time }}"
