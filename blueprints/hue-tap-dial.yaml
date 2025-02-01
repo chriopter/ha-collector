@@ -1,5 +1,5 @@
 blueprint:
-  name: Hue Tap Dial Z2M 
+  name: Hue Tap Dial Z2M – Combined Dimming & Button Events
   domain: automation
   input:
     mqtt_topic:
@@ -188,7 +188,7 @@ condition:
     value_template: "{{ trigger.payload != '' }}"
 
 action:
-  # Normalize the incoming event: if the payload is JSON use its 'action' key; otherwise, use the raw payload.
+  # Normalize the incoming event:
   - variables:
       event: >
         {% if trigger.payload.startswith('{') %}
@@ -275,7 +275,7 @@ action:
           - service: light.turn_on
             target:
               entity_id: !input target_light
-            data:
+            data_template:
               brightness_step_pct: "{{ !input dial_rotate_right_step_pct | float }}"
       - conditions:
           - condition: template
@@ -284,7 +284,7 @@ action:
           - service: light.turn_on
             target:
               entity_id: !input target_light
-            data:
+            data_template:
               brightness_step_pct: "{{ !input dial_rotate_right_slow_pct | float }}"
       - conditions:
           - condition: template
@@ -293,7 +293,7 @@ action:
           - service: light.turn_on
             target:
               entity_id: !input target_light
-            data:
+            data_template:
               brightness_step_pct: "{{ !input brightness_step_up_pct | float }}"
       - conditions:
           - condition: template
@@ -302,7 +302,7 @@ action:
           - service: light.turn_on
             target:
               entity_id: !input target_light
-            data:
+            data_template:
               brightness_step_pct: "{{ !input dial_rotate_right_fast_pct | float }}"
 
       # Left / Decrease brightness
@@ -313,7 +313,7 @@ action:
           - service: light.turn_on
             target:
               entity_id: !input target_light
-            data:
+            data_template:
               brightness_step_pct: "{{ -1 * (!input dial_rotate_left_step_pct | float) }}"
       - conditions:
           - condition: template
@@ -322,7 +322,7 @@ action:
           - service: light.turn_on
             target:
               entity_id: !input target_light
-            data:
+            data_template:
               brightness_step_pct: "{{ -1 * (!input dial_rotate_left_slow_pct | float) }}"
       - conditions:
           - condition: template
@@ -331,7 +331,7 @@ action:
           - service: light.turn_on
             target:
               entity_id: !input target_light
-            data:
+            data_template:
               brightness_step_pct: "{{ -1 * (!input brightness_step_down_pct | float) }}"
       - conditions:
           - condition: template
@@ -340,5 +340,5 @@ action:
           - service: light.turn_on
             target:
               entity_id: !input target_light
-            data:
+            data_template:
               brightness_step_pct: "{{ -1 * (!input dial_rotate_left_fast_pct | float) }}"
