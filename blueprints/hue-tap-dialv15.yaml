@@ -93,8 +93,8 @@ action:
   - variables:
       button: "{{ trigger.payload_json.action | regex_replace(find='[^1-4]', replace='') }}"
       action_type: "{{ trigger.payload_json.action }}"
-      last_button: "{{ states(input.last_pressed) }}"
-      press_count: "{{ states(input.tap_counter) }}"
+      last_button: "{{ states(this.last_pressed) }}"
+      press_count: "{{ states(this.tap_counter) }}"
 
   - choose:
       # Handle initial button press
@@ -103,7 +103,7 @@ action:
             value_template: "{{ action_type is match('^button_[1-4]_press$') }}"
         sequence:
           - condition: template
-            value_template: "{{ button != states(input.last_pressed) }}"
+            value_template: "{{ button != states(this.last_pressed) }}"
           - service: counter.reset
             target:
               entity_id: !input tap_counter
@@ -124,7 +124,7 @@ action:
       # Handle double press actions
       - conditions:
           - condition: template
-            value_template: "{{ action_type is match('button_[1-4]_press_release') and states(input.tap_counter) > '1' }}"
+            value_template: "{{ action_type is match('button_[1-4]_press_release') and states(this.tap_counter) > '1' }}"
         sequence:
           - choose:
               - conditions:
@@ -154,7 +154,7 @@ action:
               - delay:
                   milliseconds: 250
               - condition: template
-                value_template: "{{ states(input.tap_counter) > '1' }}"
+                value_template: "{{ states(this.tap_counter) > '1' }}"
               - service: script.stop
                 data:
                   message: "Double tap detected"
