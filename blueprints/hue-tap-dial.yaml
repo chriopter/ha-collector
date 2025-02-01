@@ -1,5 +1,5 @@
 blueprint:
-  name: Hue Tap Dial Z2M v8
+  name: Hue Tap Dial Z2M v9
   domain: automation
   input:
     mqtt_topic:
@@ -99,9 +99,20 @@ blueprint:
     # Unified dimming action
     dimming_action:
       name: "Dimming Action"
-      description: "Single action for ALL brightness changes. When dimming up, only affects lights that are already on."
+      description: "Single action for ALL brightness changes. When dimming up, only affects lights that are already on. Configure as light.turn_on with brightness_step_pct: '{{ brightness_step }}' and transition: '{{ input.transition_time }}'"
       selector:
         action: {}
+
+    transition_time:
+      name: "Transition Time"
+      description: "Transition duration in seconds for brightness changes"
+      default: 0.5
+      selector:
+        number:
+          min: 0
+          max: 10
+          step: 0.1
+          unit_of_measurement: "s"
 
     # Step size configurations
     step_size_right_step:
@@ -188,7 +199,7 @@ mode: parallel
 
 trigger:
   - platform: mqtt
-    topic: !input mqtt_topic
+    topic: "{{ input.mqtt_topic }}"
 
 condition:
   - condition: template
@@ -200,29 +211,29 @@ action:
       event: "{{ trigger.payload_json.action }}"
       brightness_step: >
         {% if event == 'dial_rotate_right_step' %}
-          {{ !input step_size_right_step }}
+          {{ input.step_size_right_step }}
         {% elif event == 'dial_rotate_right_slow' %}
-          {{ !input step_size_right_slow }}
+          {{ input.step_size_right_slow }}
         {% elif event == 'brightness_step_up' %}
-          {{ !input step_size_right_quarter }}
+          {{ input.step_size_right_quarter }}
         {% elif event == 'dial_rotate_right_fast' %}
-          {{ !input step_size_right_fast }}
+          {{ input.step_size_right_fast }}
         {% elif event == 'dial_rotate_left_step' %}
-          {{ -(!input step_size_left_step) }}
+          {{ -(input.step_size_left_step) }}
         {% elif event == 'dial_rotate_left_slow' %}
-          {{ -(!input step_size_left_slow) }}
+          {{ -(input.step_size_left_slow) }}
         {% elif event == 'brightness_step_down' %}
-          {{ -(!input step_size_left_quarter) }}
+          {{ -(input.step_size_left_quarter) }}
         {% elif event == 'dial_rotate_left_fast' %}
-          {{ -(!input step_size_left_fast) }}
+          {{ -(input.step_size_left_fast) }}
         {% else %}
           {{ 0 }}
         {% endif %}
       is_dim_up: "{{ brightness_step > 0 }}"
       # Check if target lights are on (user needs to adapt this to their lights)
       is_light_on: >
-        {% set lights = expand(dimming_action.target.entity_id) 
-           if dimming_action.target.entity_id is defined 
+        {% set lights = expand(input.dimming_action.target.entity_id) 
+           if input.dimming_action.target.entity_id is defined 
            else [] %}
         {% for light in lights %}
           {% if light.state == 'on' %}
@@ -236,70 +247,70 @@ action:
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_1_press' }}"
-        sequence: !input button_1_press
+        sequence: "{{ input.button_1_press }}"
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_1_press_release' }}"
-        sequence: !input button_1_press_release
+        sequence: "{{ input.button_1_press_release }}"
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_1_hold' }}"
-        sequence: !input button_1_hold
+        sequence: "{{ input.button_1_hold }}"
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_1_hold_release' }}"
-        sequence: !input button_1_hold_release
+        sequence: "{{ input.button_1_hold_release }}"
 
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_2_press' }}"
-        sequence: !input button_2_press
+        sequence: "{{ input.button_2_press }}"
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_2_press_release' }}"
-        sequence: !input button_2_press_release
+        sequence: "{{ input.button_2_press_release }}"
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_2_hold' }}"
-        sequence: !input button_2_hold
+        sequence: "{{ input.button_2_hold }}"
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_2_hold_release' }}"
-        sequence: !input button_2_hold_release
+        sequence: "{{ input.button_2_hold_release }}"
 
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_3_press' }}"
-        sequence: !input button_3_press
+        sequence: "{{ input.button_3_press }}"
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_3_press_release' }}"
-        sequence: !input button_3_press_release
+        sequence: "{{ input.button_3_press_release }}"
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_3_hold' }}"
-        sequence: !input button_3_hold
+        sequence: "{{ input.button_3_hold }}"
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_3_hold_release' }}"
-        sequence: !input button_3_hold_release
+        sequence: "{{ input.button_3_hold_release }}"
 
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_4_press' }}"
-        sequence: !input button_4_press
+        sequence: "{{ input.button_4_press }}"
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_4_press_release' }}"
-        sequence: !input button_4_press_release
+        sequence: "{{ input.button_4_press_release }}"
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_4_hold' }}"
-        sequence: !input button_4_hold
+        sequence: "{{ input.button_4_hold }}"
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_4_hold_release' }}"
-        sequence: !input button_4_hold_release
+        sequence: "{{ input.button_4_hold_release }}"
 
       # ––– Unified Dimming Events –––
       - conditions:
@@ -323,4 +334,4 @@ action:
               - conditions:
                   - condition: template
                     value_template: "{{ not is_dim_up or is_light_on }}"
-                sequence: !input dimming_action
+                sequence: "{{ input.dimming_action }}"
