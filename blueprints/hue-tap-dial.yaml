@@ -1,355 +1,171 @@
 blueprint:
-  name: Hue Tap Dial Z2M v14
+  name: Hue Tap Dial Z2M v16
   domain: automation
   input:
     mqtt_topic:
-      name: "MQTT Topic"
-      description: "MQTT topic for the Philips Hue Tap Dial Switch"
-      default: "zigbee2mqtt/<device name>"
-
-    ## Button 1 events
+      name: MQTT Topic
+      description: Topic of the Philips Hue Tap Dial Switch
+      default: zigbee2mqtt/<device name>
+    # Button 1
     button_1_press:
-      name: "Button 1 Press"
+      name: Button 1 Press
       default: []
       selector:
-        action: {}
+        action:
     button_1_press_release:
-      name: "Button 1 Press Release"
+      name: Button 1 Press Release
       default: []
       selector:
-        action: {}
+        action:
     button_1_hold:
-      name: "Button 1 Hold"
+      name: Button 1 Hold
       default: []
       selector:
-        action: {}
+        action:
     button_1_hold_release:
-      name: "Button 1 Hold Release"
+      name: Button 1 Hold Release
       default: []
       selector:
-        action: {}
-
-    ## Button 2 events
+        action:
+    # Button 2
     button_2_press:
-      name: "Button 2 Press"
+      name: Button 2 Press
       default: []
       selector:
-        action: {}
+        action:
     button_2_press_release:
-      name: "Button 2 Press Release"
+      name: Button 2 Press Release
       default: []
       selector:
-        action: {}
+        action:
     button_2_hold:
-      name: "Button 2 Hold"
+      name: Button 2 Hold
       default: []
       selector:
-        action: {}
+        action:
     button_2_hold_release:
-      name: "Button 2 Hold Release"
+      name: Button 2 Hold Release
       default: []
       selector:
-        action: {}
-
-    ## Button 3 events
+        action:
+    # Button 3
     button_3_press:
-      name: "Button 3 Press"
+      name: Button 3 Press
       default: []
       selector:
-        action: {}
+        action:
     button_3_press_release:
-      name: "Button 3 Press Release"
+      name: Button 3 Press Release
       default: []
       selector:
-        action: {}
+        action:
     button_3_hold:
-      name: "Button 3 Hold"
+      name: Button 3 Hold
       default: []
       selector:
-        action: {}
+        action:
     button_3_hold_release:
-      name: "Button 3 Hold Release"
+      name: Button 3 Hold Release
       default: []
       selector:
-        action: {}
-
-    ## Button 4 events
+        action:
+    # Button 4
     button_4_press:
-      name: "Button 4 Press"
+      name: Button 4 Press
       default: []
       selector:
-        action: {}
+        action:
     button_4_press_release:
-      name: "Button 4 Press Release"
+      name: Button 4 Press Release
       default: []
       selector:
-        action: {}
+        action:
     button_4_hold:
-      name: "Button 4 Hold"
+      name: Button 4 Hold
       default: []
       selector:
-        action: {}
+        action:
     button_4_hold_release:
-      name: "Button 4 Hold Release"
+      name: Button 4 Hold Release
       default: []
       selector:
-        action: {}
-
-    ## Dial events
-    # Unified dimming action
-    dimming_action:
-      name: "Dimming Action"
-      description: "Single action for ALL brightness changes. When dimming up, only affects lights that are already on. Configure as light.turn_on with brightness_step_pct: '{{ brightness_step }}' and transition: '{{ input.transition_time }}'"
-      selector:
-        action: {}
-
-    transition_time:
-      name: "Transition Time"
-      description: "Transition duration in seconds for brightness changes"
-      default: 0.5
-      selector:
-        number:
-          min: 0
-          max: 10
-          step: 0.1
-          unit_of_measurement: "s"
-
-    # Step size configurations
-    step_size_right_step:
-      name: "Single Step Up Size"
-      description: "Brightness step size (%) for single step rotation right"
-      default: 10
-      selector:
-        number:
-          min: 1
-          max: 100
-          unit_of_measurement: "%"
-
-    step_size_right_slow:
-      name: "Slow Turn Up Size"
-      description: "Brightness step size (%) for slow rotation right"
-      default: 5
-      selector:
-        number:
-          min: 1
-          max: 100
-          unit_of_measurement: "%"
-
-    step_size_right_quarter:
-      name: "Quarter Turn Up Size"
-      description: "Brightness step size (%) for quarter turn right"
-      default: 25
-      selector:
-        number:
-          min: 1
-          max: 100
-          unit_of_measurement: "%"
-
-    step_size_right_fast:
-      name: "Fast Turn Up Size"
-      description: "Brightness step size (%) for fast rotation right"
-      default: 40
-      selector:
-        number:
-          min: 1
-          max: 100
-          unit_of_measurement: "%"
-
-    step_size_left_step:
-      name: "Single Step Down Size"
-      description: "Brightness step size (%) for single step rotation left"
-      default: 10
-      selector:
-        number:
-          min: 1
-          max: 100
-          unit_of_measurement: "%"
-
-    step_size_left_slow:
-      name: "Slow Turn Down Size"
-      description: "Brightness step size (%) for slow rotation left"
-      default: 5
-      selector:
-        number:
-          min: 1
-          max: 100
-          unit_of_measurement: "%"
-
-    step_size_left_quarter:
-      name: "Quarter Turn Down Size"
-      description: "Brightness step size (%) for quarter turn left"
-      default: 25
-      selector:
-        number:
-          min: 1
-          max: 100
-          unit_of_measurement: "%"
-
-    step_size_left_fast:
-      name: "Fast Turn Down Size"
-      description: "Brightness step size (%) for fast rotation left"
-      default: 40
-      selector:
-        number:
-          min: 1
-          max: 100
-          unit_of_measurement: "%"
+        action:
 
 mode: parallel
+max: 10
+max_exceeded: silent
 
 trigger:
   - platform: mqtt
-    topic: "{{ input.mqtt_topic }}"
+    topic: !input mqtt_topic
 
 condition:
   - condition: template
-    value_template: >
-      {{ trigger.payload_json is defined and trigger.payload_json.action is defined or 
-         trigger.payload is defined }}
+    value_template: "{{ trigger.payload_json.action != '' }}"
 
 action:
-  # Set initial variables
-  - variables:
-      event: >
-        {% if trigger.payload_json is defined %}
-          {{ trigger.payload_json.action }}
-        {% else %}
-          {{ trigger.payload }}
-        {% endif %}
-
-  # Calculate brightness step based on event
-  - variables:
-      brightness_step: >
-        {% if event == 'dial_rotate_right_step' %}
-          {{ input.step_size_right_step }}
-        {% elif event == 'dial_rotate_right_slow' %}
-          {{ input.step_size_right_slow }}
-        {% elif event == 'brightness_step_up' %}
-          {{ input.step_size_right_quarter }}
-        {% elif event == 'dial_rotate_right_fast' %}
-          {{ input.step_size_right_fast }}
-        {% elif event == 'dial_rotate_left_step' %}
-          {{ -(input.step_size_left_step) }}
-        {% elif event == 'dial_rotate_left_slow' %}
-          {{ -(input.step_size_left_slow) }}
-        {% elif event == 'brightness_step_down' %}
-          {{ -(input.step_size_left_quarter) }}
-        {% elif event == 'dial_rotate_left_fast' %}
-          {{ -(input.step_size_left_fast) }}
-        {% else %}
-          {{ 0 }}
-        {% endif %}
-
-  # Check dimming direction and light states
-  - variables:
-      is_dim_up: "{{ brightness_step > 0 }}"
-      is_light_on: >
-        {% set lights = expand(input.dimming_action.target.entity_id) 
-           if input.dimming_action.target.entity_id is defined 
-           else [] %}
-        {% if lights | selectattr('state', 'eq', 'on') | list | count > 0 %}
-          {{ true }}
-        {% else %}
-          {{ false }}
-        {% endif %}
   - choose:
-      # ––– Button Events –––
       - conditions:
           - condition: template
-            value_template: "{{ event == 'button_1_press' }}"
+            value_template: "{{ trigger.payload_json.action == 'button_1_press' }}"
         sequence: !input button_1_press
       - conditions:
           - condition: template
-            value_template: "{{ event == 'button_1_press_release' }}"
+            value_template: "{{ trigger.payload_json.action == 'button_1_press_release' }}"
         sequence: !input button_1_press_release
       - conditions:
           - condition: template
-            value_template: "{{ event == 'button_1_hold' }}"
+            value_template: "{{ trigger.payload_json.action == 'button_1_hold' }}"
         sequence: !input button_1_hold
       - conditions:
           - condition: template
-            value_template: "{{ event == 'button_1_hold_release' }}"
+            value_template: "{{ trigger.payload_json.action == 'button_1_hold_release' }}"
         sequence: !input button_1_hold_release
-
       - conditions:
           - condition: template
-            value_template: "{{ event == 'button_2_press' }}"
+            value_template: "{{ trigger.payload_json.action == 'button_2_press' }}"
         sequence: !input button_2_press
       - conditions:
           - condition: template
-            value_template: "{{ event == 'button_2_press_release' }}"
+            value_template: "{{ trigger.payload_json.action == 'button_2_press_release' }}"
         sequence: !input button_2_press_release
       - conditions:
           - condition: template
-            value_template: "{{ event == 'button_2_hold' }}"
+            value_template: "{{ trigger.payload_json.action == 'button_2_hold' }}"
         sequence: !input button_2_hold
       - conditions:
           - condition: template
-            value_template: "{{ event == 'button_2_hold_release' }}"
+            value_template: "{{ trigger.payload_json.action == 'button_2_hold_release' }}"
         sequence: !input button_2_hold_release
-
       - conditions:
           - condition: template
-            value_template: "{{ event == 'button_3_press' }}"
+            value_template: "{{ trigger.payload_json.action == 'button_3_press' }}"
         sequence: !input button_3_press
       - conditions:
           - condition: template
-            value_template: "{{ event == 'button_3_press_release' }}"
+            value_template: "{{ trigger.payload_json.action == 'button_3_press_release' }}"
         sequence: !input button_3_press_release
       - conditions:
           - condition: template
-            value_template: "{{ event == 'button_3_hold' }}"
+            value_template: "{{ trigger.payload_json.action == 'button_3_hold' }}"
         sequence: !input button_3_hold
       - conditions:
           - condition: template
-            value_template: "{{ event == 'button_3_hold_release' }}"
+            value_template: "{{ trigger.payload_json.action == 'button_3_hold_release' }}"
         sequence: !input button_3_hold_release
-
       - conditions:
           - condition: template
-            value_template: "{{ event == 'button_4_press' }}"
+            value_template: "{{ trigger.payload_json.action == 'button_4_press' }}"
         sequence: !input button_4_press
       - conditions:
           - condition: template
-            value_template: "{{ event == 'button_4_press_release' }}"
+            value_template: "{{ trigger.payload_json.action == 'button_4_press_release' }}"
         sequence: !input button_4_press_release
       - conditions:
           - condition: template
-            value_template: "{{ event == 'button_4_hold' }}"
+            value_template: "{{ trigger.payload_json.action == 'button_4_hold' }}"
         sequence: !input button_4_hold
       - conditions:
           - condition: template
-            value_template: "{{ event == 'button_4_hold_release' }}"
+            value_template: "{{ trigger.payload_json.action == 'button_4_hold_release' }}"
         sequence: !input button_4_hold_release
-
-      # ––– Unified Dimming Events –––
-      - conditions:
-          - condition: template
-            value_template: >
-              {{ event in [
-                'dial_rotate_right_step',
-                'dial_rotate_right_slow',
-                'dial_rotate_right_fast',
-                'brightness_step_up',
-                'dial_rotate_left_step',
-                'dial_rotate_left_slow',
-                'dial_rotate_left_fast',
-                'brightness_step_down'
-              ] }}
-        sequence:
-          # Only proceed if either:
-          # 1. We're dimming down (always allowed)
-          # 2. We're dimming up AND at least one target light is on
-          - choose:
-              - conditions:
-                  - condition: template
-                    value_template: "{{ not is_dim_up or is_light_on }}"
-                sequence:
-                  - service: light.turn_on
-                    target: "{{ input.dimming_action.target }}"
-                    data:
-                      brightness_step_pct: "{{ brightness_step }}"
-                      transition: >
-                        {% if input.transition_time > 0 %}
-                        {{ input.transition_time }}
-                        {% endif %}
