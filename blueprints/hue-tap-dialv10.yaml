@@ -101,11 +101,9 @@ action:
       - conditions:
           - "{{ action_type is match('^button_[1-4]_press$') }}"
         sequence:
-          - if:
-              - condition: template
-                value_template: "{{ button != last_button }}"
-            then:
-              - counter.reset: "{{ tap_counter }}"
+          - condition: template
+            value_template: "{{ button != last_button }}"
+          - counter.reset: "{{ tap_counter }}"
           - input_text.set_value:
               entity_id: "{{ last_pressed }}"
               value: "{{ button }}"
@@ -136,11 +134,9 @@ action:
             sequence:
               - delay:
                   milliseconds: 250
-              - if:
-                  - condition: template
-                    value_template: "{{ press_count > '1' }}"
-                then:
-                  - stop: "Double tap detected"
+              - condition: template
+                value_template: "{{ press_count > '1' }}"
+              - stop: "Double tap detected"
               - choose:
                   - conditions: ["{{ action_type == 'button_1_press_release' }}"]
                     sequence: !input button_1_single_press
