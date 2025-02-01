@@ -6,6 +6,7 @@ blueprint:
       name: "MQTT Topic"
       description: "MQTT topic for the Philips Hue Tap Dial Switch"
       default: "zigbee2mqtt/<device name>"
+
     ## Button 1 events
     button_1_press:
       name: "Button 1 Press"
@@ -112,91 +113,99 @@ trigger:
   - platform: mqtt
     topic: !input mqtt_topic
 
-# Assuming the device sends a plain text payload like "button_1_press" etc.
+# We require a non-empty payload
 condition:
   - condition: template
     value_template: "{{ trigger.payload != '' }}"
 
 action:
+  # Set a variable 'event' that uses the JSON field if available, else the plain text payload.
+  - variables:
+      event: >
+        {% if trigger.payload.startswith('{') %}
+          {{ trigger.payload_json.action }}
+        {% else %}
+          {{ trigger.payload }}
+        {% endif %}
   - choose:
       # Button 1 events
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload == 'button_1_press' }}"
+            value_template: "{{ event == 'button_1_press' }}"
         sequence: !input button_1_press
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload == 'button_1_press_release' }}"
+            value_template: "{{ event == 'button_1_press_release' }}"
         sequence: !input button_1_press_release
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload == 'button_1_hold' }}"
+            value_template: "{{ event == 'button_1_hold' }}"
         sequence: !input button_1_hold
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload == 'button_1_hold_release' }}"
+            value_template: "{{ event == 'button_1_hold_release' }}"
         sequence: !input button_1_hold_release
 
       # Button 2 events
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload == 'button_2_press' }}"
+            value_template: "{{ event == 'button_2_press' }}"
         sequence: !input button_2_press
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload == 'button_2_press_release' }}"
+            value_template: "{{ event == 'button_2_press_release' }}"
         sequence: !input button_2_press_release
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload == 'button_2_hold' }}"
+            value_template: "{{ event == 'button_2_hold' }}"
         sequence: !input button_2_hold
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload == 'button_2_hold_release' }}"
+            value_template: "{{ event == 'button_2_hold_release' }}"
         sequence: !input button_2_hold_release
 
       # Button 3 events
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload == 'button_3_press' }}"
+            value_template: "{{ event == 'button_3_press' }}"
         sequence: !input button_3_press
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload == 'button_3_press_release' }}"
+            value_template: "{{ event == 'button_3_press_release' }}"
         sequence: !input button_3_press_release
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload == 'button_3_hold' }}"
+            value_template: "{{ event == 'button_3_hold' }}"
         sequence: !input button_3_hold
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload == 'button_3_hold_release' }}"
+            value_template: "{{ event == 'button_3_hold_release' }}"
         sequence: !input button_3_hold_release
 
       # Button 4 events
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload == 'button_4_press' }}"
+            value_template: "{{ event == 'button_4_press' }}"
         sequence: !input button_4_press
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload == 'button_4_press_release' }}"
+            value_template: "{{ event == 'button_4_press_release' }}"
         sequence: !input button_4_press_release
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload == 'button_4_hold' }}"
+            value_template: "{{ event == 'button_4_hold' }}"
         sequence: !input button_4_hold
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload == 'button_4_hold_release' }}"
+            value_template: "{{ event == 'button_4_hold_release' }}"
         sequence: !input button_4_hold_release
 
       # Unified Dial Rotation events
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload == 'dial_rotate_clockwise' }}"
+            value_template: "{{ event == 'dial_rotate_clockwise' }}"
         sequence: !input dial_rotate_clockwise
       - conditions:
           - condition: template
-            value_template: "{{ trigger.payload == 'dial_rotate_counter_clockwise' }}"
+            value_template: "{{ event == 'dial_rotate_counter_clockwise' }}"
         sequence: !input dial_rotate_counter_clockwise
