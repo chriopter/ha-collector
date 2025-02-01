@@ -1,11 +1,19 @@
 blueprint:
-  name: Hue Tap Dial Z2M Extended Dimming
+  name: Hue Tap Dial Z2M – Combined Dimming & Button Events
   domain: automation
   input:
     mqtt_topic:
       name: "MQTT Topic"
       description: "MQTT topic for the Philips Hue Tap Dial Switch"
       default: "zigbee2mqtt/<device name>"
+
+    ## Target Light for Dimming (applies to all dial events)
+    target_light:
+      name: "Target Light for Dimming"
+      description: "Choose the light to control with the dial rotations"
+      selector:
+        entity:
+          domain: light
 
     ## Button 1 events
     button_1_press:
@@ -95,49 +103,140 @@ blueprint:
       selector:
         action: {}
 
-    ## Dial rotation / dimming events – Right side (increasing brightness)
+    ## Dial (dimming) events – Right (increase brightness)
     dial_rotate_right_step:
-      name: "Dial Rotate Right Step (single step of dimmer)"
+      name: "Dial Rotate Right – Step"
+      description: "A small (step) increase in brightness."
       default: []
       selector:
-        action: {}
+        text:
+          placeholder: "Event: dial_rotate_right_step"
     dial_rotate_right_slow:
-      name: "Dial Rotate Right Slow (turning the dimmer slowly)"
+      name: "Dial Rotate Right – Slow"
+      description: "A slow increase in brightness."
       default: []
       selector:
-        action: {}
+        text:
+          placeholder: "Event: dial_rotate_right_slow"
     brightness_step_up:
-      name: "Brightness Step Up (turn dimmer a quarter at once)"
+      name: "Brightness Step Up (Quarter Up)"
+      description: "A larger, quarter-step increase in brightness."
       default: []
       selector:
-        action: {}
+        text:
+          placeholder: "Event: brightness_step_up"
     dial_rotate_right_fast:
-      name: "Dial Rotate Right Fast (turning the dimmer very fast)"
+      name: "Dial Rotate Right – Fast"
+      description: "A fast increase in brightness."
       default: []
       selector:
-        action: {}
+        text:
+          placeholder: "Event: dial_rotate_right_fast"
 
-    ## Dial rotation / dimming events – Left side (decreasing brightness)
+    ## Dial (dimming) events – Left (decrease brightness)
     dial_rotate_left_step:
-      name: "Dial Rotate Left Step (single step down)"
+      name: "Dial Rotate Left – Step"
+      description: "A small (step) decrease in brightness."
       default: []
       selector:
-        action: {}
+        text:
+          placeholder: "Event: dial_rotate_left_step"
     dial_rotate_left_slow:
-      name: "Dial Rotate Left Slow (turning the dimmer down slowly)"
+      name: "Dial Rotate Left – Slow"
+      description: "A slow decrease in brightness."
       default: []
       selector:
-        action: {}
+        text:
+          placeholder: "Event: dial_rotate_left_slow"
     brightness_step_down:
-      name: "Brightness Step Down (turn dimmer down a quarter at once)"
+      name: "Brightness Step Down (Quarter Down)"
+      description: "A larger, quarter-step decrease in brightness."
       default: []
       selector:
-        action: {}
+        text:
+          placeholder: "Event: brightness_step_down"
     dial_rotate_left_fast:
-      name: "Dial Rotate Left Fast (turning the dimmer down very fast)"
+      name: "Dial Rotate Left – Fast"
+      description: "A fast decrease in brightness."
       default: []
       selector:
-        action: {}
+        text:
+          placeholder: "Event: dial_rotate_left_fast"
+
+    ## Numeric inputs for brightness adjustment (in percent)
+    dial_rotate_right_step_pct:
+      name: "Right – Step Increase (%)"
+      description: "Brightness change for a right step event (e.g., 2 for 2% increase)"
+      default: 2
+      selector:
+        number:
+          mode: box
+          min: 0
+          max: 100
+    dial_rotate_right_slow_pct:
+      name: "Right – Slow Increase (%)"
+      description: "Brightness change for a right slow event (e.g., 5 for 5% increase)"
+      default: 5
+      selector:
+        number:
+          mode: box
+          min: 0
+          max: 100
+    brightness_step_up_pct:
+      name: "Right – Quarter-Step Increase (%)"
+      description: "Brightness change for a quarter-step increase (e.g., 25 for 25% increase)"
+      default: 25
+      selector:
+        number:
+          mode: box
+          min: 0
+          max: 100
+    dial_rotate_right_fast_pct:
+      name: "Right – Fast Increase (%)"
+      description: "Brightness change for a right fast event (e.g., 10 for 10% increase)"
+      default: 10
+      selector:
+        number:
+          mode: box
+          min: 0
+          max: 100
+
+    dial_rotate_left_step_pct:
+      name: "Left – Step Decrease (%)"
+      description: "Brightness change for a left step event (enter as a positive number; it will decrease brightness)"
+      default: 2
+      selector:
+        number:
+          mode: box
+          min: 0
+          max: 100
+    dial_rotate_left_slow_pct:
+      name: "Left – Slow Decrease (%)"
+      description: "Brightness change for a left slow event (enter as a positive number; it will decrease brightness)"
+      default: 5
+      selector:
+        number:
+          mode: box
+          min: 0
+          max: 100
+    brightness_step_down_pct:
+      name: "Left – Quarter-Step Decrease (%)"
+      description: "Brightness change for a quarter-step decrease (enter as a positive number; it will decrease brightness)"
+      default: 25
+      selector:
+        number:
+          mode: box
+          min: 0
+          max: 100
+    dial_rotate_left_fast_pct:
+      name: "Left – Fast Decrease (%)"
+      description: "Brightness change for a left fast event (enter as a positive number; it will decrease brightness)"
+      default: 10
+      selector:
+        number:
+          mode: box
+          min: 0
+          max: 100
 
 mode: parallel
 
@@ -145,13 +244,13 @@ trigger:
   - platform: mqtt
     topic: !input mqtt_topic
 
-# Require a non-empty payload.
+# We require a non-empty payload.
 condition:
   - condition: template
     value_template: "{{ trigger.payload != '' }}"
 
 action:
-  # Create a variable 'event' that uses the JSON field if available, else the plain text payload.
+  # Create a variable 'event' that uses the JSON field (if available) or the plain text payload.
   - variables:
       event: >
         {% if trigger.payload.startswith('{') %}
@@ -160,7 +259,8 @@ action:
           {{ trigger.payload }}
         {% endif %}
   - choose:
-      # Button 1 events
+      # ––– Button events –––
+      # Button 1
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_1_press' }}"
@@ -178,7 +278,7 @@ action:
             value_template: "{{ event == 'button_1_hold_release' }}"
         sequence: !input button_1_hold_release
 
-      # Button 2 events
+      # Button 2
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_2_press' }}"
@@ -196,7 +296,7 @@ action:
             value_template: "{{ event == 'button_2_hold_release' }}"
         sequence: !input button_2_hold_release
 
-      # Button 3 events
+      # Button 3
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_3_press' }}"
@@ -214,7 +314,7 @@ action:
             value_template: "{{ event == 'button_3_hold_release' }}"
         sequence: !input button_3_hold_release
 
-      # Button 4 events
+      # Button 4
       - conditions:
           - condition: template
             value_template: "{{ event == 'button_4_press' }}"
@@ -232,38 +332,80 @@ action:
             value_template: "{{ event == 'button_4_hold_release' }}"
         sequence: !input button_4_hold_release
 
-      # Dial rotation / dimming events – Right side
+      # ––– Dial (dimming) events –––
+      # Right / Increase brightness
       - conditions:
           - condition: template
             value_template: "{{ event == 'dial_rotate_right_step' }}"
-        sequence: !input dial_rotate_right_step
+        sequence:
+          - service: light.turn_on
+            target:
+              entity_id: !input target_light
+            data:
+              brightness_step_pct: !input dial_rotate_right_step_pct
       - conditions:
           - condition: template
             value_template: "{{ event == 'dial_rotate_right_slow' }}"
-        sequence: !input dial_rotate_right_slow
+        sequence:
+          - service: light.turn_on
+            target:
+              entity_id: !input target_light
+            data:
+              brightness_step_pct: !input dial_rotate_right_slow_pct
       - conditions:
           - condition: template
             value_template: "{{ event == 'brightness_step_up' }}"
-        sequence: !input brightness_step_up
+        sequence:
+          - service: light.turn_on
+            target:
+              entity_id: !input target_light
+            data:
+              brightness_step_pct: !input brightness_step_up_pct
       - conditions:
           - condition: template
             value_template: "{{ event == 'dial_rotate_right_fast' }}"
-        sequence: !input dial_rotate_right_fast
+        sequence:
+          - service: light.turn_on
+            target:
+              entity_id: !input target_light
+            data:
+              brightness_step_pct: !input dial_rotate_right_fast_pct
 
-      # Dial rotation / dimming events – Left side
+      # Left / Decrease brightness
       - conditions:
           - condition: template
             value_template: "{{ event == 'dial_rotate_left_step' }}"
-        sequence: !input dial_rotate_left_step
+        sequence:
+          - service: light.turn_on
+            target:
+              entity_id: !input target_light
+            data:
+              # Multiply by -1 to decrease brightness.
+              brightness_step_pct: -1 * !input dial_rotate_left_step_pct
       - conditions:
           - condition: template
             value_template: "{{ event == 'dial_rotate_left_slow' }}"
-        sequence: !input dial_rotate_left_slow
+        sequence:
+          - service: light.turn_on
+            target:
+              entity_id: !input target_light
+            data:
+              brightness_step_pct: -1 * !input dial_rotate_left_slow_pct
       - conditions:
           - condition: template
             value_template: "{{ event == 'brightness_step_down' }}"
-        sequence: !input brightness_step_down
+        sequence:
+          - service: light.turn_on
+            target:
+              entity_id: !input target_light
+            data:
+              brightness_step_pct: -1 * !input brightness_step_down_pct
       - conditions:
           - condition: template
             value_template: "{{ event == 'dial_rotate_left_fast' }}"
-        sequence: !input dial_rotate_left_fast
+        sequence:
+          - service: light.turn_on
+            target:
+              entity_id: !input target_light
+            data:
+              brightness_step_pct: -1 * !input dial_rotate_left_fast_pct
