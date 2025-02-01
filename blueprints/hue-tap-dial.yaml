@@ -270,8 +270,8 @@ action:
           - service: light.turn_on
             target:
               entity_id: !input target_light
-            data:
-              brightness_step_pct: !input dial_rotate_right_step_pct
+            data_template:
+              brightness_step_pct: "{{ !input dial_rotate_right_step_pct }}"
       - conditions:
           - condition: template
             value_template: "{{ event == 'dial_rotate_right_slow' }}"
@@ -279,8 +279,8 @@ action:
           - service: light.turn_on
             target:
               entity_id: !input target_light
-            data:
-              brightness_step_pct: !input dial_rotate_right_slow_pct
+            data_template:
+              brightness_step_pct: "{{ !input dial_rotate_right_slow_pct }}"
       - conditions:
           - condition: template
             value_template: "{{ event == 'brightness_step_up' }}"
@@ -288,8 +288,8 @@ action:
           - service: light.turn_on
             target:
               entity_id: !input target_light
-            data:
-              brightness_step_pct: !input brightness_step_up_pct
+            data_template:
+              brightness_step_pct: "{{ !input brightness_step_up_pct }}"
       - conditions:
           - condition: template
             value_template: "{{ event == 'dial_rotate_right_fast' }}"
@@ -297,8 +297,8 @@ action:
           - service: light.turn_on
             target:
               entity_id: !input target_light
-            data:
-              brightness_step_pct: !input dial_rotate_right_fast_pct
+            data_template:
+              brightness_step_pct: "{{ !input dial_rotate_right_fast_pct }}"
 
       # Left / Decrease brightness
       - conditions:
@@ -308,7 +308,7 @@ action:
           - service: light.turn_on
             target:
               entity_id: !input target_light
-            data:
+            data_template:
               brightness_step_pct: "{{ -1 * !input dial_rotate_left_step_pct }}"
       - conditions:
           - condition: template
@@ -317,7 +317,7 @@ action:
           - service: light.turn_on
             target:
               entity_id: !input target_light
-            data:
+            data_template:
               brightness_step_pct: "{{ -1 * !input dial_rotate_left_slow_pct }}"
       - conditions:
           - condition: template
@@ -326,7 +326,7 @@ action:
           - service: light.turn_on
             target:
               entity_id: !input target_light
-            data:
+            data_template:
               brightness_step_pct: "{{ -1 * !input brightness_step_down_pct }}"
       - conditions:
           - condition: template
@@ -335,5 +335,5 @@ action:
           - service: light.turn_on
             target:
               entity_id: !input target_light
-            data:
+            data_template:
               brightness_step_pct: "{{ -1 * !input dial_rotate_left_fast_pct }}"
