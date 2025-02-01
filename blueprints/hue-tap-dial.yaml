@@ -1,5 +1,5 @@
 blueprint:
-  name: Hue Tap Dial Z2M v13
+  name: Hue Tap Dial Z2M v14
   domain: automation
   input:
     mqtt_topic:
@@ -203,12 +203,19 @@ trigger:
 
 condition:
   - condition: template
-    value_template: "{{ trigger.payload_json.action is defined }}"
+    value_template: >
+      {{ trigger.payload_json is defined and trigger.payload_json.action is defined or 
+         trigger.payload is defined }}
 
 action:
   # Set initial variables
   - variables:
-      event: "{{ trigger.payload_json.action }}"
+      event: >
+        {% if trigger.payload_json is defined %}
+          {{ trigger.payload_json.action }}
+        {% else %}
+          {{ trigger.payload }}
+        {% endif %}
 
   # Calculate brightness step based on event
   - variables:
