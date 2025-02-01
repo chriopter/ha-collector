@@ -1,5 +1,5 @@
 blueprint:
-  name: Hue Tap Dial Z2M v6
+  name: Hue Tap Dial Z2M v7
   domain: automation
   input:
     mqtt_topic:
@@ -200,16 +200,34 @@ action:
       event: "{{ trigger.payload_json.action }}"
       brightness_step: >
         {% set steps = {
-          'dial_rotate_right_step': step_size_right_step,
-          'dial_rotate_right_slow': step_size_right_slow,
-          'brightness_step_up': step_size_right_quarter,
-          'dial_rotate_right_fast': step_size_right_fast,
-          'dial_rotate_left_step': -(step_size_left_step),
-          'dial_rotate_left_slow': -(step_size_left_slow),
-          'brightness_step_down': -(step_size_left_quarter),
-          'dial_rotate_left_fast': -(step_size_left_fast)
+          'dial_rotate_right_step': (states | default(0)) | float,
+          'dial_rotate_right_slow': (states | default(0)) | float,
+          'brightness_step_up': (states | default(0)) | float,
+          'dial_rotate_right_fast': (states | default(0)) | float,
+          'dial_rotate_left_step': -((states | default(0)) | float),
+          'dial_rotate_left_slow': -((states | default(0)) | float),
+          'brightness_step_down': -((states | default(0)) | float),
+          'dial_rotate_left_fast': -((states | default(0)) | float)
         } %}
-        {{ steps[event] | default(0) }}
+        {% if event == 'dial_rotate_right_step' %}
+          {{ states('input_number.step_size_right_step') | float }}
+        {% elif event == 'dial_rotate_right_slow' %}
+          {{ states('input_number.step_size_right_slow') | float }}
+        {% elif event == 'brightness_step_up' %}
+          {{ states('input_number.step_size_right_quarter') | float }}
+        {% elif event == 'dial_rotate_right_fast' %}
+          {{ states('input_number.step_size_right_fast') | float }}
+        {% elif event == 'dial_rotate_left_step' %}
+          {{ -(states('input_number.step_size_left_step') | float) }}
+        {% elif event == 'dial_rotate_left_slow' %}
+          {{ -(states('input_number.step_size_left_slow') | float) }}
+        {% elif event == 'brightness_step_down' %}
+          {{ -(states('input_number.step_size_left_quarter') | float) }}
+        {% elif event == 'dial_rotate_left_fast' %}
+          {{ -(states('input_number.step_size_left_fast') | float) }}
+        {% else %}
+          {{ 0 }}
+        {% endif %}
       is_dim_up: "{{ brightness_step > 0 }}"
       # Check if target lights are on (user needs to adapt this to their lights)
       is_light_on: >
