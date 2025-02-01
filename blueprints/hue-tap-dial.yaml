@@ -1,5 +1,5 @@
 blueprint:
-  name: Hue Tap Dial Z2M
+  name: Hue Tap Dial Z2M Extended Dimming
   domain: automation
   input:
     mqtt_topic:
@@ -95,14 +95,46 @@ blueprint:
       selector:
         action: {}
 
-    ## Unified Dial Rotation events (applies to all)
-    dial_rotate_clockwise:
-      name: "Dial Rotate Clockwise (Dim or De-dim)"
+    ## Dial rotation / dimming events – Right side (increasing brightness)
+    dial_rotate_right_step:
+      name: "Dial Rotate Right Step (single step of dimmer)"
       default: []
       selector:
         action: {}
-    dial_rotate_counter_clockwise:
-      name: "Dial Rotate Counter-Clockwise (Dim or De-dim)"
+    dial_rotate_right_slow:
+      name: "Dial Rotate Right Slow (turning the dimmer slowly)"
+      default: []
+      selector:
+        action: {}
+    brightness_step_up:
+      name: "Brightness Step Up (turn dimmer a quarter at once)"
+      default: []
+      selector:
+        action: {}
+    dial_rotate_right_fast:
+      name: "Dial Rotate Right Fast (turning the dimmer very fast)"
+      default: []
+      selector:
+        action: {}
+
+    ## Dial rotation / dimming events – Left side (decreasing brightness)
+    dial_rotate_left_step:
+      name: "Dial Rotate Left Step (single step down)"
+      default: []
+      selector:
+        action: {}
+    dial_rotate_left_slow:
+      name: "Dial Rotate Left Slow (turning the dimmer down slowly)"
+      default: []
+      selector:
+        action: {}
+    brightness_step_down:
+      name: "Brightness Step Down (turn dimmer down a quarter at once)"
+      default: []
+      selector:
+        action: {}
+    dial_rotate_left_fast:
+      name: "Dial Rotate Left Fast (turning the dimmer down very fast)"
       default: []
       selector:
         action: {}
@@ -113,13 +145,13 @@ trigger:
   - platform: mqtt
     topic: !input mqtt_topic
 
-# We require a non-empty payload
+# Require a non-empty payload.
 condition:
   - condition: template
     value_template: "{{ trigger.payload != '' }}"
 
 action:
-  # Set a variable 'event' that uses the JSON field if available, else the plain text payload.
+  # Create a variable 'event' that uses the JSON field if available, else the plain text payload.
   - variables:
       event: >
         {% if trigger.payload.startswith('{') %}
@@ -200,12 +232,38 @@ action:
             value_template: "{{ event == 'button_4_hold_release' }}"
         sequence: !input button_4_hold_release
 
-      # Unified Dial Rotation events
+      # Dial rotation / dimming events – Right side
       - conditions:
           - condition: template
-            value_template: "{{ event == 'dial_rotate_clockwise' }}"
-        sequence: !input dial_rotate_clockwise
+            value_template: "{{ event == 'dial_rotate_right_step' }}"
+        sequence: !input dial_rotate_right_step
       - conditions:
           - condition: template
-            value_template: "{{ event == 'dial_rotate_counter_clockwise' }}"
-        sequence: !input dial_rotate_counter_clockwise
+            value_template: "{{ event == 'dial_rotate_right_slow' }}"
+        sequence: !input dial_rotate_right_slow
+      - conditions:
+          - condition: template
+            value_template: "{{ event == 'brightness_step_up' }}"
+        sequence: !input brightness_step_up
+      - conditions:
+          - condition: template
+            value_template: "{{ event == 'dial_rotate_right_fast' }}"
+        sequence: !input dial_rotate_right_fast
+
+      # Dial rotation / dimming events – Left side
+      - conditions:
+          - condition: template
+            value_template: "{{ event == 'dial_rotate_left_step' }}"
+        sequence: !input dial_rotate_left_step
+      - conditions:
+          - condition: template
+            value_template: "{{ event == 'dial_rotate_left_slow' }}"
+        sequence: !input dial_rotate_left_slow
+      - conditions:
+          - condition: template
+            value_template: "{{ event == 'brightness_step_down' }}"
+        sequence: !input brightness_step_down
+      - conditions:
+          - condition: template
+            value_template: "{{ event == 'dial_rotate_left_fast' }}"
+        sequence: !input dial_rotate_left_fast
