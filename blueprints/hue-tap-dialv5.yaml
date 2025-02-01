@@ -1,5 +1,5 @@
 blueprint:
-  name: Hue Tap Dial v4
+  name: Hue Tap Dial
   domain: automation
   input:
     mqtt_topic:
@@ -100,10 +100,11 @@ action:
       - conditions:
           - "{{ action_type is match('^button_[1-4]_press$') }}"
         sequence:
-          - if:
-              - "{{ button != last_button }}"
-            then:
-              - counter.reset: "{{ tap_counter }}"
+          - choose:
+              - conditions:
+                  - "{{ button != last_button }}"
+                sequence:
+                  - counter.reset: "{{ tap_counter }}"
           - input_text.set_value:
               entity_id: "{{ last_pressed }}"
               value: "{{ button }}"
@@ -126,29 +127,38 @@ action:
                 sequence: !input button_4_double_press
 
     default:
-      - if:
-          - "{{ action_type is match('button_[1-4]_press_release') }}"
-        then:
-          - delay:
-              milliseconds: 250
-          - if:
-              - "{{ press_count > '1' }}"
-            then:
-              - stop: "Double tap detected"
-          - choose:
-              - conditions: ["{{ action_type == 'button_1_press_release' }}"]
-                sequence: !input button_1_single_press
-              - conditions: ["{{ action_type == 'button_2_press_release' }}"]
-                sequence: !input button_2_single_press
-              - conditions: ["{{ action_type == 'button_3_press_release' }}"]
-                sequence: !input button_3_single_press
-              - conditions: ["{{ action_type == 'button_4_press_release' }}"]
-                sequence: !input button_4_single_press
-              - conditions: ["{{ action_type == 'button_1_hold' }}"]
-                sequence: !input button_1_hold
-              - conditions: ["{{ action_type == 'button_2_hold' }}"]
-                sequence: !input button_2_hold
-              - conditions: ["{{ action_type == 'button_3_hold' }}"]
-                sequence: !input button_3_hold
-              - conditions: ["{{ action_type == 'button_4_hold' }}"]
-                sequence: !input button_4_hold
+      - choose:
+          - conditions:
+              - "{{ action_type is match('button_[1-4]_press_release') }}"
+            sequence:
+              - delay:
+                  milliseconds: 250
+              - choose:
+                  - conditions:
+                      - "{{ press_count > '1' }}"
+                    sequence:
+                      - stop: "Double tap detected"
+                  - conditions:
+                      - "{{ action_type == 'button_1_press_release' }}"
+                    sequence: !input button_1_single_press
+                  - conditions:
+                      - "{{ action_type == 'button_2_press_release' }}"
+                    sequence: !input button_2_single_press
+                  - conditions:
+                      - "{{ action_type == 'button_3_press_release' }}"
+                    sequence: !input button_3_single_press
+                  - conditions:
+                      - "{{ action_type == 'button_4_press_release' }}"
+                    sequence: !input button_4_single_press
+          - conditions:
+              - "{{ action_type == 'button_1_hold' }}"
+            sequence: !input button_1_hold
+          - conditions:
+              - "{{ action_type == 'button_2_hold' }}"
+            sequence: !input button_2_hold
+          - conditions:
+              - "{{ action_type == 'button_3_hold' }}"
+            sequence: !input button_3_hold
+          - conditions:
+              - "{{ action_type == 'button_4_hold' }}"
+            sequence: !input button_4_hold
