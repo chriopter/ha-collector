@@ -1,0 +1,253 @@
+blueprint:
+  name: Hue Tap Dial - via Hue Bridge
+  description: Steuere alles mit dem Hue Tap Dial - 4 Tasten (initial_press, short_release, long_press, long_release, repeat) + Dial
+  domain: automation
+  input:
+    tap_dial_device_id:
+      name: Tap Dial Device ID
+      description: "Device ID des Tap Dial (aus Developer Tools → Events → hue_event)"
+      selector:
+        text:
+    # Button 1
+    button_1_initial_press:
+      name: Taste 1 - Initial Press
+      default: []
+      selector:
+        action:
+    button_1_short_release:
+      name: Taste 1 - Short Release
+      default: []
+      selector:
+        action:
+    button_1_long_press:
+      name: Taste 1 - Long Press
+      default: []
+      selector:
+        action:
+    button_1_long_release:
+      name: Taste 1 - Long Release
+      default: []
+      selector:
+        action:
+    button_1_repeat:
+      name: Taste 1 - Repeat (bei gedrückt halten)
+      default: []
+      selector:
+        action:
+    # Button 2
+    button_2_initial_press:
+      name: Taste 2 - Initial Press
+      default: []
+      selector:
+        action:
+    button_2_short_release:
+      name: Taste 2 - Short Release
+      default: []
+      selector:
+        action:
+    button_2_long_press:
+      name: Taste 2 - Long Press
+      default: []
+      selector:
+        action:
+    button_2_long_release:
+      name: Taste 2 - Long Release
+      default: []
+      selector:
+        action:
+    button_2_repeat:
+      name: Taste 2 - Repeat (bei gedrückt halten)
+      default: []
+      selector:
+        action:
+    # Button 3
+    button_3_initial_press:
+      name: Taste 3 - Initial Press
+      default: []
+      selector:
+        action:
+    button_3_short_release:
+      name: Taste 3 - Short Release
+      default: []
+      selector:
+        action:
+    button_3_long_press:
+      name: Taste 3 - Long Press
+      default: []
+      selector:
+        action:
+    button_3_long_release:
+      name: Taste 3 - Long Release
+      default: []
+      selector:
+        action:
+    button_3_repeat:
+      name: Taste 3 - Repeat (bei gedrückt halten)
+      default: []
+      selector:
+        action:
+    # Button 4
+    button_4_initial_press:
+      name: Taste 4 - Initial Press
+      default: []
+      selector:
+        action:
+    button_4_short_release:
+      name: Taste 4 - Short Release
+      default: []
+      selector:
+        action:
+    button_4_long_press:
+      name: Taste 4 - Long Press
+      default: []
+      selector:
+        action:
+    button_4_long_release:
+      name: Taste 4 - Long Release
+      default: []
+      selector:
+        action:
+    button_4_repeat:
+      name: Taste 4 - Repeat (bei gedrückt halten)
+      default: []
+      selector:
+        action:
+    # Dial
+    dial_clockwise_start:
+      name: Dial - Rechts Start
+      default: []
+      selector:
+        action:
+    dial_clockwise_repeat:
+      name: Dial - Rechts Repeat
+      default: []
+      selector:
+        action:
+    dial_counter_clockwise_start:
+      name: Dial - Links Start
+      default: []
+      selector:
+        action:
+    dial_counter_clockwise_repeat:
+      name: Dial - Links Repeat
+      default: []
+      selector:
+        action:
+
+mode: parallel
+max: 10
+max_exceeded: silent
+
+trigger:
+  - platform: event
+    event_type: hue_event
+    event_data:
+      device_id: !input tap_dial_device_id
+
+variables:
+  event_type: "{{ trigger.event.data.type }}"
+  event_subtype: "{{ trigger.event.data.subtype }}"
+
+action:
+  - choose:
+      # Button 1
+      - conditions:
+          - condition: template
+            value_template: "{{ event_type == 'initial_press' and event_subtype == 1 }}"
+        sequence: !input button_1_initial_press
+      - conditions:
+          - condition: template
+            value_template: "{{ event_type == 'short_release' and event_subtype == 1 }}"
+        sequence: !input button_1_short_release
+      - conditions:
+          - condition: template
+            value_template: "{{ event_type == 'long_press' and event_subtype == 1 }}"
+        sequence: !input button_1_long_press
+      - conditions:
+          - condition: template
+            value_template: "{{ event_type == 'long_release' and event_subtype == 1 }}"
+        sequence: !input button_1_long_release
+      - conditions:
+          - condition: template
+            value_template: "{{ event_type == 'repeat' and event_subtype == 1 }}"
+        sequence: !input button_1_repeat
+      # Button 2
+      - conditions:
+          - condition: template
+            value_template: "{{ event_type == 'initial_press' and event_subtype == 2 }}"
+        sequence: !input button_2_initial_press
+      - conditions:
+          - condition: template
+            value_template: "{{ event_type == 'short_release' and event_subtype == 2 }}"
+        sequence: !input button_2_short_release
+      - conditions:
+          - condition: template
+            value_template: "{{ event_type == 'long_press' and event_subtype == 2 }}"
+        sequence: !input button_2_long_press
+      - conditions:
+          - condition: template
+            value_template: "{{ event_type == 'long_release' and event_subtype == 2 }}"
+        sequence: !input button_2_long_release
+      - conditions:
+          - condition: template
+            value_template: "{{ event_type == 'repeat' and event_subtype == 2 }}"
+        sequence: !input button_2_repeat
+      # Button 3
+      - conditions:
+          - condition: template
+            value_template: "{{ event_type == 'initial_press' and event_subtype == 3 }}"
+        sequence: !input button_3_initial_press
+      - conditions:
+          - condition: template
+            value_template: "{{ event_type == 'short_release' and event_subtype == 3 }}"
+        sequence: !input button_3_short_release
+      - conditions:
+          - condition: template
+            value_template: "{{ event_type == 'long_press' and event_subtype == 3 }}"
+        sequence: !input button_3_long_press
+      - conditions:
+          - condition: template
+            value_template: "{{ event_type == 'long_release' and event_subtype == 3 }}"
+        sequence: !input button_3_long_release
+      - conditions:
+          - condition: template
+            value_template: "{{ event_type == 'repeat' and event_subtype == 3 }}"
+        sequence: !input button_3_repeat
+      # Button 4
+      - conditions:
+          - condition: template
+            value_template: "{{ event_type == 'initial_press' and event_subtype == 4 }}"
+        sequence: !input button_4_initial_press
+      - conditions:
+          - condition: template
+            value_template: "{{ event_type == 'short_release' and event_subtype == 4 }}"
+        sequence: !input button_4_short_release
+      - conditions:
+          - condition: template
+            value_template: "{{ event_type == 'long_press' and event_subtype == 4 }}"
+        sequence: !input button_4_long_press
+      - conditions:
+          - condition: template
+            value_template: "{{ event_type == 'long_release' and event_subtype == 4 }}"
+        sequence: !input button_4_long_release
+      - conditions:
+          - condition: template
+            value_template: "{{ event_type == 'repeat' and event_subtype == 4 }}"
+        sequence: !input button_4_repeat
+      # Dial
+      - conditions:
+          - condition: template
+            value_template: "{{ event_type == 'start' and event_subtype == 'clock_wise' }}"
+        sequence: !input dial_clockwise_start
+      - conditions:
+          - condition: template
+            value_template: "{{ event_type == 'repeat' and event_subtype == 'clock_wise' }}"
+        sequence: !input dial_clockwise_repeat
+      - conditions:
+          - condition: template
+            value_template: "{{ event_type == 'start' and event_subtype == 'counter_clock_wise' }}"
+        sequence: !input dial_counter_clockwise_start
+      - conditions:
+          - condition: template
+            value_template: "{{ event_type == 'repeat' and event_subtype == 'counter_clock_wise' }}"
+        sequence: !input dial_counter_clockwise_repeat
