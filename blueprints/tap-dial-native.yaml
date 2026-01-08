@@ -1,0 +1,188 @@
+blueprint:
+  name: Hue Tap Dial - via Hue Bridge
+  description: Steuere Lichter mit dem Hue Tap Dial - 4 Tasten + Dial für Helligkeit
+  domain: automation
+  input:
+    tap_dial:
+      name: Tap Dial Device
+      description: Der Hue Tap Dial Switch
+      selector:
+        device:
+          integration: hue
+    target_light:
+      name: Ziel-Licht (optional)
+      description: Das Licht das mit dem Dial gesteuert werden soll (leer lassen wenn nicht benötigt)
+      default: []
+      selector:
+        entity:
+          domain: light
+    brightness_step:
+      name: Helligkeits-Schritt
+      description: Wie viel Prozent pro Drehung
+      default: 10
+      selector:
+        number:
+          min: 5
+          max: 25
+          step: 5
+    # Button 1
+    button_1_short:
+      name: Taste 1 - Kurz
+      default: []
+      selector:
+        action:
+    button_1_long:
+      name: Taste 1 - Lang
+      default: []
+      selector:
+        action:
+    # Button 2
+    button_2_short:
+      name: Taste 2 - Kurz
+      default: []
+      selector:
+        action:
+    button_2_long:
+      name: Taste 2 - Lang
+      default: []
+      selector:
+        action:
+    # Button 3
+    button_3_short:
+      name: Taste 3 - Kurz
+      default: []
+      selector:
+        action:
+    button_3_long:
+      name: Taste 3 - Lang
+      default: []
+      selector:
+        action:
+    # Button 4
+    button_4_short:
+      name: Taste 4 - Kurz
+      default: []
+      selector:
+        action:
+    button_4_long:
+      name: Taste 4 - Lang
+      default: []
+      selector:
+        action:
+    # Dial Actions
+    dial_right:
+      name: Dial - Rechts drehen
+      default: []
+      selector:
+        action:
+    dial_left:
+      name: Dial - Links drehen
+      default: []
+      selector:
+        action:
+
+mode: restart
+max_exceeded: silent
+
+trigger:
+  - platform: device
+    device_id: !input tap_dial
+    domain: hue
+    type: short_release
+    subtype: 1
+    id: b1_short
+  - platform: device
+    device_id: !input tap_dial
+    domain: hue
+    type: long_release
+    subtype: 1
+    id: b1_long
+  - platform: device
+    device_id: !input tap_dial
+    domain: hue
+    type: short_release
+    subtype: 2
+    id: b2_short
+  - platform: device
+    device_id: !input tap_dial
+    domain: hue
+    type: long_release
+    subtype: 2
+    id: b2_long
+  - platform: device
+    device_id: !input tap_dial
+    domain: hue
+    type: short_release
+    subtype: 3
+    id: b3_short
+  - platform: device
+    device_id: !input tap_dial
+    domain: hue
+    type: long_release
+    subtype: 3
+    id: b3_long
+  - platform: device
+    device_id: !input tap_dial
+    domain: hue
+    type: short_release
+    subtype: 4
+    id: b4_short
+  - platform: device
+    device_id: !input tap_dial
+    domain: hue
+    type: long_release
+    subtype: 4
+    id: b4_long
+  - platform: device
+    device_id: !input tap_dial
+    domain: hue
+    type: clock_wise
+    id: dial_cw
+  - platform: device
+    device_id: !input tap_dial
+    domain: hue
+    type: counter_clock_wise
+    id: dial_ccw
+
+action:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: b1_short
+        sequence: !input button_1_short
+      - conditions:
+          - condition: trigger
+            id: b1_long
+        sequence: !input button_1_long
+      - conditions:
+          - condition: trigger
+            id: b2_short
+        sequence: !input button_2_short
+      - conditions:
+          - condition: trigger
+            id: b2_long
+        sequence: !input button_2_long
+      - conditions:
+          - condition: trigger
+            id: b3_short
+        sequence: !input button_3_short
+      - conditions:
+          - condition: trigger
+            id: b3_long
+        sequence: !input button_3_long
+      - conditions:
+          - condition: trigger
+            id: b4_short
+        sequence: !input button_4_short
+      - conditions:
+          - condition: trigger
+            id: b4_long
+        sequence: !input button_4_long
+      - conditions:
+          - condition: trigger
+            id: dial_cw
+        sequence: !input dial_right
+      - conditions:
+          - condition: trigger
+            id: dial_ccw
+        sequence: !input dial_left
