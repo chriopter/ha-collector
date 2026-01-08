@@ -1,5 +1,5 @@
 blueprint:
-  name: Hue Tap Dial Switch
+  name: Hue Tap Dial - via Hue Bridge
   description: Steuere Lichter mit dem Hue Tap Dial - 4 Tasten für Szenen, Dial für Helligkeit
   domain: automation
   input:
