@@ -9,7 +9,6 @@ blueprint:
       selector:
         device:
           integration: hue
-          model: RDM002
     target_light:
       name: Ziel-Licht
       description: Das Licht das gesteuert werden soll
