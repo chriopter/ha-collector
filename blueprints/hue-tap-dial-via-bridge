@@ -6,7 +6,7 @@ blueprint:
     tap_dial_device_id:
       name: Tap Dial Device ID
       description: "Device ID des Tap Dial (aus Developer Tools → Events)"
-      default: "052e53f841a381493060bb878452da2e"
+      default: "INSERT"
       selector:
         text:
     button_1_short:
